@@ -13,8 +13,14 @@
     </nav>
 
     <div class="container mt-3 mb-3">
-      <router-view />
+      <router-view v-if="auth"/>
+      <div v-else>
+        Auth: 
+        <input type="text" class="form-control" placeholder="Pass" v-model="pass" />
+          <button @click="checkAuth()">Submit</button>
+      </div>
     </div>
+
     <footer class="pt-4 my-md-5 pt-md-5 border-top container">
         <div class="row">
           <div class="col-12 col-md">
@@ -47,7 +53,22 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  data(){
+    return{
+      auth: false,
+      pass: ""
+    }
+  },
+  methods: {
+    checkAuth() {
+      if(this.pass == '1234') {
+        this.auth = true;
+      } else {
+        alert('Invalid Pass');
+      }
+    }
+  }
 }
 </script>
 <style lang="scss">
