@@ -64,9 +64,22 @@ export default {
     checkAuth() {
       if(this.pass == '1234') {
         this.auth = true;
+        let d = new Date();                
+        d.setTime(d.getTime() + (1*24*60*60*1000));
+        let expires = "expires="+ d.toUTCString();
+        document.cookie = "Auth=true;" + expires + ";";
       } else {
         alert('Invalid Pass');
       }
+    },
+    getCookie(name) {
+      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
+  },
+  created(){
+    if (this.getCookie('Auth')) {
+      this.auth = true;
     }
   }
 }
