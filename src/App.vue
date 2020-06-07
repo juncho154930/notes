@@ -9,6 +9,19 @@
         <li class="nav-item">
           <a href="/add" class="nav-link">Add</a>
         </li>
+        <li class="nav-item">
+          <a href="/quote" class="nav-link">Quote</a>
+        </li>
+        <div class="dropdown show">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Rentals
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="/rentals">Rental</a>
+            <a class="dropdown-item" href="/rentals/info">Info</a>
+            <a class="dropdown-item" href="/rentals/cost">Cost</a>
+          </div>
+        </div>
       </div>
     </nav>
 
@@ -24,26 +37,22 @@
     <footer class="pt-4 my-md-5 pt-md-5 border-top container">
         <div class="row">
           <div class="col-12 col-md">
-            <small class="d-block mb-3 text-muted">© 2020</small>
+            <small class="d-block mb-3 text-muted">© 2020 Advance AC | HVAC</small>
           </div>
           <div class="col-6 col-md">
             <h5>Features</h5>
             <ul class="list-unstyled text-small">
-              <li><a class="text-muted" href="#">Cool stuff</a></li>
               <li><a class="text-muted" href="#">Random feature</a></li>
               <li><a class="text-muted" href="#">Team feature</a></li>
               <li><a class="text-muted" href="#">Stuff for developers</a></li>
-              <li><a class="text-muted" href="#">Another one</a></li>
-              <li><a class="text-muted" href="#">Last time</a></li>
             </ul>
           </div>
           <div class="col-6 col-md">
             <h5>Resources</h5>
             <ul class="list-unstyled text-small">
-              <li><a class="text-muted" href="#">Resource</a></li>
-              <li><a class="text-muted" href="#">Resource name</a></li>
-              <li><a class="text-muted" href="#">Another resource</a></li>
-              <li><a class="text-muted" href="#">Final resource</a></li>
+              <li><a class="text-muted" href="#">Site Map</a></li>
+              <li><a class="text-muted" href="#">About Us</a></li>
+              <li><a class="text-muted" href="#">Privacy Policy</a></li>
             </ul>
           </div>
         </div>
