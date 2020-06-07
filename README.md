@@ -1,7 +1,12 @@
+Build process: 
+`yarn run build`
+push on server side
+
 DB running: https://cloud.mongodb.com/
 
 
-# moneynotes
+
+# Advance AC
 
 ## Project setup
 ```

@@ -23,7 +23,7 @@ export default {
     if(this.slug == 'info') {
       this.articleHead = `Ice Machines For Rent`;
       this.articleBody = 
-      `<p>Rent ice machines for restaurants, hotels, bars, and offices. <strong>LOW MONTHLY RATES</strong>. Cost is a big concern for many people who require ice vending machines. From small to large and everything in between, costs vary widely from model to model. We strongly recommend letting us know what you are looking for and we can show you pricing options between buying and renting. Of course, this will depend on your industry and capacity needs.</p>
+      `<p>Rent ice machines for restaurants, hotels, bars, and offices. <strong>LOW MONTHLY RATES</strong>. <a href="/rentals/cost">Cost</a> is a big concern for many people who require ice vending machines. From small to large and everything in between, costs vary widely from model to model. We strongly recommend letting us know what you are looking for and we can show you pricing options between buying and renting. Of course, this will depend on your industry and capacity needs.</p>
       <p>Do you need to serve a few people a day or 150 or more? Are you in one of the following industries: manufacturing and industrial, medical facilities, offices, schools/colleges, retail locations, hotels/motels/inns/resorts, restaurants/bars, and gyms/health clubs/spas?</p>
       <p>We have the perfect match for you when it comes to finding ice machines for rent. Our high-quality machines are designed to fit your needs cost effectively.</p>
       <p>To learn more, follow the link below and fill out our request form to receive competing estimates. Hint: it’s much more affordable than you may think!</p>

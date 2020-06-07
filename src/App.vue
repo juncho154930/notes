@@ -1,17 +1,8 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href="/" class="navbar-brand">MoneyNotes</a>
+      <a href="/" class="navbar-brand">Advance AC</a>
       <div class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a href="/tutorials" class="nav-link">Tutorials</a>
-        </li>
-        <li class="nav-item">
-          <a href="/add" class="nav-link">Add</a>
-        </li>
-        <li class="nav-item">
-          <a href="/quote" class="nav-link">Quote</a>
-        </li>
         <div class="dropdown show">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Rentals
@@ -22,6 +13,16 @@
             <a class="dropdown-item" href="/rentals/cost">Cost</a>
           </div>
         </div>
+        <div class="dropdown show">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Misc
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="/tutorials">Tutorials</a>
+            <a class="dropdown-item" href="/add">Add</a>
+          </div>
+        </div>
+        <a href="/quote" class="nav-link">Quote</a>
       </div>
     </nav>
 
