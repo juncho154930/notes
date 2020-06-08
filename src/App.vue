@@ -18,12 +18,14 @@
             Misc
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="/tutorialshome">Tutorials Home</a>
             <a class="dropdown-item" href="/tutorials">Tutorials</a>
             <a class="dropdown-item" href="/add">Add</a>
           </div>
         </div>
         <a href="/quote" class="nav-link">Quote</a>
       </div>
+      <div style="color:#fff">Call 1-800-XXX-XXXX</div>
     </nav>
 
     <div class="container mt-3 mb-3">

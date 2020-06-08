@@ -13,6 +13,12 @@ export default new Router({
       component: () => import("./components/Home")
     },
     {
+      path: "/tutorialshome",
+      // alias: "/tutorials",
+      name: "tutorialshome",
+      component: () => import("./components/TutorialsHome")
+    },
+    {
       path: "/tutorials",
       name: "tutorials",
       component: () => import("./components/TutorialsList")
