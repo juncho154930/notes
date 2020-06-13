@@ -1,39 +1,39 @@
 <template>
-  <div v-if="currentTutorial" class="edit-form">
-    <h4>Tutorial Edit</h4>
+  <div v-if="currentBlog" class="edit-form">
+    <h4>Blog Edit</h4>
     <form>
       <div class="form-group">
         <label for="title">Title</label>
         <input type="text" class="form-control" id="title"
-          v-model="currentTutorial.title"
+          v-model="currentBlog.title"
         />
       </div>
       <div class="form-group">
         <label for="description">Description</label>
         <textarea type="text" class="form-control" id="description"
-          v-model="currentTutorial.description"></textarea>
+          v-model="currentBlog.description"></textarea>
       </div>
     </form>
 
     <button type="submit" class="badge badge-primary mr-2"
-      @click="updateTutorial"
+      @click="updateBlog"
     >
       Update
     </button>
 
     <button class="badge badge-info mr-2"
-      @click="duplicateTutorial"
+      @click="duplicateBlog"
     >
       Duplicate
     </button>
 
     <button class="badge badge-danger mr-2"
-      @click="deleteTutorial"
+      @click="deleteBlog"
     >
       Delete
     </button>
 
-    <a v-if="this.isTutorialsPage" :href="'/tutorials/' + currentTutorial.id" type="submit" class="badge badge-warning" >
+    <a v-if="this.isBlogsPage" :href="'/blog/' + currentBlog.id" type="submit" class="badge badge-warning" >
       Edit View
     </a>
     <p>{{ message }}</p>
@@ -41,21 +41,21 @@
 </template>
 
 <script>
-import TutorialDataService from "../services/TutorialDataService";
+import BlogDataService from "../services/BlogDataService";
 
 export default {
-  name: "tutorial",
+  name: "blog",
   data() {
     return {
-      currentTutorial: null,
+      currentBlog: null,
       message: '',
       routeId: this.id,
-      isTutorialsPage: this.$route.name == "tutorials"
+      isBlogsPage: this.$route.name == "blog"
     };
   },
   props: {
     id: String,
-    saveTutorial: {
+    saveBlog: {
       type: Function,
       default() {
 
@@ -64,24 +64,24 @@ export default {
   },
   watch: { 
     id: function() {
-      this.getTutorial(this.id);
+      this.getBlog(this.id);
     }
   },
   methods: {
-    duplicateTutorial(){
+    duplicateBlog(){
       var data = {
-        title: this.currentTutorial.title,
-        description: this.currentTutorial.description
+        title: this.currentBlog.title,
+        description: this.currentBlog.description
       };
 
       if(data.title) {
-        TutorialDataService.create(data)
+        BlogDataService.create(data)
           .then(response => {
             console.log(response.data);
-            if(this.isTutorialsPage){
+            if(this.isBlogsPage){
               this.$parent.refreshList();
             } else {
-              this.$router.push({ name: "tutorials" });
+              this.$router.push({ name: "blogs" });
             }
           })
           .catch(e => {
@@ -91,10 +91,10 @@ export default {
         alert('Needs a title');
       }
     },
-    getTutorial(id) {
-      TutorialDataService.get(id)
+    getBlog(id) {
+      BlogDataService.get(id)
         .then(response => {
-          this.currentTutorial = response.data;
+          this.currentBlog = response.data;
           console.log(response.data);
         })
         .catch(e => {
@@ -102,25 +102,25 @@ export default {
         });
     },
 
-    updateTutorial() {
-      TutorialDataService.update(this.currentTutorial.id, this.currentTutorial)
+    updateBlog() {
+      BlogDataService.update(this.currentBlog.id, this.currentBlog)
         .then(response => {
           console.log(response.data);
-          this.message = 'The tutorial was updated successfully!';
+          this.message = 'The blog was updated successfully!';
         })
         .catch(e => {
           console.log(e);
         });
     },
 
-    deleteTutorial() {
-      TutorialDataService.delete(this.currentTutorial.id)
+    deleteBlog() {
+      BlogDataService.delete(this.currentBlog.id)
       .then(response => {
         console.log(response.data);
-        if(this.isTutorialsPage){
+        if(this.isBlogsPage){
           this.$parent.refreshList();
         } else {
-          this.$router.push({ name: "tutorials" });
+          this.$router.push({ name: "blogs" });
         }
       })
       .catch(e => {
@@ -132,7 +132,7 @@ export default {
   mounted() {
     this.routeId = this.id ? this.id : this.$route.params.id;
     this.message = '';
-    this.getTutorial(this.routeId);
+    this.getBlog(this.routeId);
   }
 };
 </script>

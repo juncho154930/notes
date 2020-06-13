@@ -18,38 +18,38 @@
       <ul class="list-group">
         <li class="list-group-item"
           :class="{ active: index == currentIndex }"
-          v-for="(tutorial, index) in tutorials"
+          v-for="(blog, index) in blogs"
           :key="index"
-          @click="setActiveTutorial(tutorial, index)"
+          @click="setActiveBlog(blog, index)"
         >
-          {{ tutorial.title }}
-          <button v-if="index == currentIndex" class="btn btn-sm btn-danger float-right" @click="removeTutorial(currentTutorial.id)">Delete</button>
+          {{ blog.title }}
+          <button v-if="index == currentIndex" class="btn btn-sm btn-danger float-right" @click="removeBlog(currentBlog.id)">Delete</button>
         </li>
       </ul>
-      <button class="mt-3 mr-3 btn btn-sm btn-primary" @click="showAddTutorials">
+      <button class="mt-3 mr-3 btn btn-sm btn-primary" @click="showAddBlogs">
         Add
       </button>
-      <button class="mt-3 btn btn-sm btn-danger" @click="removeAllTutorials" disabled>
+      <button class="mt-3 btn btn-sm btn-danger" @click="removeAllBlogs" disabled>
         Remove All
       </button>
     </div>
     <div class="col-md-6">
       <div v-if="showAdd">
-        <AddTutorial></AddTutorial>
+        <AddBlog></AddBlog>
       </div>
-      <div v-else-if="currentTutorial">
+      <div v-else-if="currentBlog">
         <div v-if="editView">
-          <EditTutorial :id="currentTutorial.id"></EditTutorial>
+          <EditBlog :id="currentBlog.id"></EditBlog>
           <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
               Hide Edit View
           </button>
         </div>
         <div v-else>
           <div>
-            <label><strong>Title:</strong></label> {{ currentTutorial.title }}
+            <label><strong>Title:</strong></label> {{ currentBlog.title }}
           </div>
           <div>
-            <label><strong>Description:</strong></label> {{ currentTutorial.description }}
+            <label><strong>Description:</strong></label> {{ currentBlog.description }}
           </div>
           <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
             Show Edit View
@@ -65,20 +65,20 @@
 </template>
 
 <script>
-import TutorialDataService from "../services/TutorialDataService";
-import EditTutorial from "./Tutorial";
-import AddTutorial from "./AddTutorial";
+import BlogDataService from "../services/BlogDataService";
+import EditBlog from "./Blog";
+import AddBlog from "./AddBlog";
 
 export default {
-  name: "tutorials-list",
+  name: "blogs-list",
   components: {
-    'EditTutorial': EditTutorial,
-    'AddTutorial': AddTutorial
+    'EditBlog': EditBlog,
+    'AddBlog': AddBlog
   },
   data() {
     return {
-      tutorials: [],
-      currentTutorial: null,
+      blogs: [],
+      currentBlog: null,
       currentIndex: -1,
       title: "",
       showAdd: false,
@@ -89,15 +89,15 @@ export default {
     toggleEditView() {
       this.editView = this.editView ? false : true;
     },
-    showAddTutorials() {
+    showAddBlogs() {
       this.showAdd = true;
-      this.currentTutorial = null;
+      this.currentBlog = null;
       this.currentIndex = -1;
     },
-    retrieveTutorials() {
-      TutorialDataService.getAll()
+    retrieveBlogs() {
+      BlogDataService.getAll()
         .then(response => {
-          this.tutorials = response.data;
+          this.blogs = response.data;
           console.log(response.data);
         })
         .catch(e => {
@@ -106,21 +106,21 @@ export default {
     },
 
     refreshList() {
-      this.retrieveTutorials();
-      this.currentTutorial = null;
+      this.retrieveBlogs();
+      this.currentBlog = null;
       this.currentIndex = -1;
     },
 
-    setActiveTutorial(tutorial, index) {
-      this.currentTutorial = tutorial;
+    setActiveBlog(blog, index) {
+      this.currentBlog = blog;
       this.currentIndex = index;
       this.showAdd = false;
       this.editView = false;
     },
 
-    removeAllTutorials() {
-      if(window.confirm('Are you sure you want to delete all tutorials?')) {
-        TutorialDataService.deleteAll()
+    removeAllBlogs() {
+      if(window.confirm('Are you sure you want to delete all blogs?')) {
+        BlogDataService.deleteAll()
         .then(response => {
           console.log(response.data);
           this.refreshList();
@@ -131,8 +131,8 @@ export default {
       }
     },
 
-    removeTutorial(id) {
-      TutorialDataService.delete(id)
+    removeBlog(id) {
+      BlogDataService.delete(id)
         .then(response => {
           console.log(response.data);
           this.refreshList();
@@ -143,9 +143,9 @@ export default {
     },
     
     searchTitle() {
-      TutorialDataService.findByTitle(this.title)
+      BlogDataService.findByTitle(this.title)
         .then(response => {
-          this.tutorials = response.data;
+          this.blogs = response.data;
           console.log(response.data);
         })
         .catch(e => {
@@ -154,7 +154,7 @@ export default {
     }
   },
   mounted() {
-    this.retrieveTutorials();
+    this.retrieveBlogs();
   }
 };
 </script>

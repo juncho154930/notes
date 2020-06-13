@@ -8,7 +8,7 @@
           class="form-control"
           id="title"
           required
-          v-model="tutorial.title"
+          v-model="blog.title"
           name="title"
         />
       </div>
@@ -19,52 +19,52 @@
           class="form-control"
           id="description"
           required
-          v-model="tutorial.description"
+          v-model="blog.description"
           name="description"
         ></textarea>
       </div>
 
-      <button @click="saveTutorial" class="btn btn-success">Submit</button>
+      <button @click="saveBlog" class="btn btn-success">Submit</button>
     </div>
 
     <div v-else>
       <h4>You submitted successfully!</h4>
-      <button class="btn btn-success d-block" @click="newTutorial">Add More</button>
-      <a v-if="!isTutorialsPage" href="/tutorials" class="btn btn-success mt-3">Tutorials Page</a>
+      <button class="btn btn-success d-block" @click="newBlog">Add More</button>
+      <a v-if="!isBlogsPage" href="/blog" class="btn btn-success mt-3">Blogs Page</a>
     </div>
   </div>
 </template>
 
 <script>
-import TutorialDataService from "../services/TutorialDataService";
+import BlogDataService from "../services/BlogDataService";
 
 export default {
-  name: "add-tutorial",
+  name: "add-blog",
   data() {
     return {
-      tutorial: {
+      blog: {
         id: null,
         title: "",
         description: ""
       },
       submitted: false,
-      isTutorialsPage: this.$route.name == "tutorials"
+      isBlogsPage: this.$route.name == "blogs"
     };
   },
   methods: {
-    saveTutorial() {
+    saveBlog() {
       var data = {
-        title: this.tutorial.title,
-        description: this.tutorial.description
+        title: this.blog.title,
+        description: this.blog.description
       };
 
       if(data.title) {
-        TutorialDataService.create(data)
+        BlogDataService.create(data)
           .then(response => {
-            this.tutorial.id = response.data.id;
+            this.blog.id = response.data.id;
             console.log(response.data);
             this.submitted = true;
-            if(this.isTutorialsPage){
+            if(this.isBlogsPage){
               this.$parent.refreshList();
             }
           })
@@ -76,9 +76,9 @@ export default {
       }
     },
     
-    newTutorial() {
+    newBlog() {
       this.submitted = false;
-      this.tutorial = {};
+      this.blog = {};
     }
   }
 };

@@ -15,11 +15,11 @@
         </div>
         <div class="dropdown show">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Misc
+            Blog
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="/tutorialshome">Tutorials Home</a>
-            <a class="dropdown-item" href="/tutorials">Tutorials</a>
+            <a class="dropdown-item" href="/bloghome">Blog Home</a>
+            <a class="dropdown-item" href="/blog">Blog</a>
             <a class="dropdown-item" href="/add">Add</a>
           </div>
         </div>

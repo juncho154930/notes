@@ -8,30 +8,30 @@ export default new Router({
   routes: [
     {
       path: "/",
-      // alias: "/tutorials",
+      // alias: "/blog",
       name: "home",
       component: () => import("./components/Home")
     },
     {
-      path: "/tutorialshome",
-      // alias: "/tutorials",
-      name: "tutorialshome",
-      component: () => import("./components/TutorialsHome")
+      path: "/bloghome",
+      // alias: "/blog",
+      name: "blohome",
+      component: () => import("./components/BlogHome")
     },
     {
-      path: "/tutorials",
-      name: "tutorials",
-      component: () => import("./components/TutorialsList")
+      path: "/blog",
+      name: "blog",
+      component: () => import("./components/BlogList")
     },
     {
-      path: "/tutorials/:id",
-      name: "tutorial-details",
-      component: () => import("./components/Tutorial")
+      path: "/blog/:id",
+      name: "blog-details",
+      component: () => import("./components/Blog")
     },
     {
       path: "/add",
       name: "add",
-      component: () => import("./components/AddTutorial")
+      component: () => import("./components/AddBlog")
     },
     {
       path: "/quote",

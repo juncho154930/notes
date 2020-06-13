@@ -1,31 +1,31 @@
 <template>
 	<div class="list">
-		<h4>Tutorials Home</h4>
+		<h4>Blogs Home</h4>
 		<ul class="list-group">
 			<li class="list-group-item row d-flex"
-				v-for="(tutorial, index) in tutorials"
+				v-for="(blog, index) in blogs"
 				:key="index" >
-				<div class="col-md-6">{{ tutorial.title }}</div>
-				<div class="col-md-6">{{ tutorial.description }}</div>
+				<div class="col-md-6">{{ blog.title }}</div>
+				<div class="col-md-6">{{ blog.description }}</div>
 			</li>
 		</ul>
 	</div>
 </template>
 <script>
-	import TutorialDataService from "../services/TutorialDataService";
+	import BlogDataService from "../services/BlogDataService";
 
 	export default {
-		name: "TutorialsHome",
+		name: "BlogsHome",
 		data() {
 			return {
-				tutorials: [],
+				blogs: [],
 			};
 		},
 		methods: {
-			retrieveTutorials() {
-				TutorialDataService.getAll()
+			retrieveBlogs() {
+				BlogDataService.getAll()
 					.then(response => {
-						this.tutorials = response.data;
+						this.blogs = response.data;
 						console.log(response.data);
 					})
 					.catch(e => {
@@ -34,7 +34,7 @@
 			},
 		},
 		mounted() {
-			this.retrieveTutorials();
+			this.retrieveBlogs();
 		}
 	};
 </script>
