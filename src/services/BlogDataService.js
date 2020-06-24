@@ -28,6 +28,13 @@ class BlogDataService {
   findByTitle(title) {
     return http.get(`/blogs?title=${title}`);
   }
+
+  getNow() {
+      const today = new Date();
+      const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      return date +' '+ time;
+  }
 }
 
 export default new BlogDataService();

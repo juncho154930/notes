@@ -45,7 +45,8 @@ export default {
       blog: {
         id: null,
         title: "",
-        description: ""
+        description: "",
+        published: true
       },
       submitted: false,
       isBlogsPage: this.$route.name == "blog"
@@ -53,26 +54,30 @@ export default {
   },
   methods: {
     saveBlog() {
-      var data = {
-        title: this.blog.title,
-        description: this.blog.description
-      };
+      if(!this.submitted) {
+        var data = {
+          title: this.blog.title,
+          description: this.blog.description,
+          published: this.blog.published,
+          timestamp: BlogDataService.getNow()
+        };
 
-      if(data.title) {
-        BlogDataService.create(data)
-          .then(response => {
-            this.blog.id = response.data.id;
-            console.log(response.data);
-            this.submitted = true;
-            if(this.isBlogsPage){
-              this.$parent.refreshList();
-            }
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      } else {
-        alert('Needs a title');
+        if(data.title) {
+          BlogDataService.create(data)
+            .then(response => {
+              this.blog.id = response.data.id;
+              console.log(response.data);
+              this.submitted = true;
+              if(this.isBlogsPage){
+                this.$parent.refreshList();
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        } else {
+          alert('Needs a title');
+        }
       }
     },
     

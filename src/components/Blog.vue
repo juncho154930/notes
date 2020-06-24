@@ -41,6 +41,9 @@
       <div>
         <label><strong>Title:</strong></label><p v-html="currentBlog.title"></p>
       </div>
+      <div>
+        <label><strong>Last Updated:</strong></label><p v-html="currentBlog.timestamp"></p>
+      </div>
       <div class="pre-text">
         <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
       </div>
@@ -71,12 +74,12 @@ export default {
   },
   props: {
     id: String,
-    saveBlog: {
-      type: Function,
-      default() {
+    // saveBlog: {
+    //   type: Function,
+    //   default() {
 
-      }
-    }
+    //   }
+    // }
   },
   watch: { 
     id: function() {
@@ -128,6 +131,7 @@ export default {
     },
 
     updateBlog() {
+      this.currentBlog.timestamp = BlogDataService.getNow();
       BlogDataService.update(this.currentBlog.id, this.currentBlog)
         .then(response => {
           console.log(response.data);
@@ -149,7 +153,7 @@ export default {
           if(this.isBlogsPage){
             this.$parent.refreshList();
           } else {
-            this.$router.push({ name: "blogs" });
+            this.$router.push({ name: "blog" });
           }
         })
         .catch(e => {
