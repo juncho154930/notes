@@ -1,5 +1,6 @@
 <template>
-  <form class="columns" v-on:submit.prevent="console.log(form)">
+  <!-- <form class="columns" v-on:submit.prevent="console.log(form)"> -->
+  <form class="columns" v-on:submit.prevent>
     <div class="column is-two-thirds">
       <section class="section">
         <h1 class="title">Advance AC Rentals</h1>

@@ -5,8 +5,8 @@
 			<li class="list-group-item row d-flex"
 				v-for="(blog, index) in blogs"
 				:key="index" >
-				<div class="col-md-6">{{ blog.title }}</div>
-				<div class="col-md-6">{{ blog.description }}</div>
+				<div class="col-md-6 pre-text" v-html="blog.title"></div>
+				<div class="col-md-6 pre-text" v-html="urlify(blog.description)"></div>
 			</li>
 		</ul>
 	</div>
@@ -18,7 +18,7 @@
 		name: "BlogsHome",
 		data() {
 			return {
-				blogs: [],
+				blogs: []
 			};
 		},
 		methods: {
@@ -26,12 +26,16 @@
 				BlogDataService.getAll()
 					.then(response => {
 						this.blogs = response.data;
-						console.log(response.data);
+						
 					})
 					.catch(e => {
 						console.log(e);
 					});
 			},
+			urlify(text) {
+				var urlRegex = /\[(https?:\/\/[^\s]+)\]/g;
+				return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>')
+			}
 		},
 		mounted() {
 			this.retrieveBlogs();

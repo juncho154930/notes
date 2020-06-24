@@ -24,6 +24,7 @@
           </div>
         </div>
         <a href="/quote" class="nav-link">Quote</a>
+        <a href="/py" class="nav-link">python</a>
       </div>
       <div style="color:#fff">Call 1-800-XXX-XXXX</div>
     </nav>

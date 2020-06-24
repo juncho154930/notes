@@ -46,10 +46,10 @@
         </div>
         <div v-else>
           <div>
-            <label><strong>Title:</strong></label> {{ currentBlog.title }}
+            <label><strong>Title:</strong></label><p v-html="currentBlog.title"></p>
           </div>
-          <div>
-            <label><strong>Description:</strong></label> {{ currentBlog.description }}
+          <div class="pre-text">
+            <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
           </div>
           <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
             Show Edit View
@@ -86,6 +86,10 @@ export default {
     };
   },
   methods: {
+    urlify(text) {
+      var urlRegex = /\[(https?:\/\/[^\s]+)\]/g;
+      return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>')
+    },
     toggleEditView() {
       this.editView = this.editView ? false : true;
     },

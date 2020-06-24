@@ -107,6 +107,9 @@ export default {
         .then(response => {
           console.log(response.data);
           this.message = 'The blog was updated successfully!';
+          if(this.isBlogsPage){
+            this.$parent.refreshList();
+          }
         })
         .catch(e => {
           console.log(e);

@@ -47,6 +47,11 @@ export default new Router({
       path: "/rentals/:slug",
       name: "rentals",
       component: () => import("./components/Rentals")
+    },
+    {
+      path: "/py",
+      name: "py",
+      component: () => import("./components/Python")
     }
   ]
 });

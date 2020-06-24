@@ -48,7 +48,7 @@ export default {
         description: ""
       },
       submitted: false,
-      isBlogsPage: this.$route.name == "blogs"
+      isBlogsPage: this.$route.name == "blog"
     };
   },
   methods: {
