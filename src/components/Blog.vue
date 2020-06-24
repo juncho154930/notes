@@ -92,26 +92,28 @@ export default {
       this.editView = this.editView ? false : true;
     },
     duplicateBlog(){
-      var data = {
-        title: this.currentBlog.title,
-        description: this.currentBlog.description
-      };
+      if(window.confirm('Are you sure you want to duplicate this blog?')) {
+        var data = {
+          title: this.currentBlog.title,
+          description: this.currentBlog.description
+        };
 
-      if(data.title) {
-        BlogDataService.create(data)
-          .then(response => {
-            console.log(response.data);
-            if(this.isBlogsPage){
-              this.$parent.refreshList();
-            } else {
-              this.$router.push({ name: "blogs" });
-            }
-          })
-          .catch(e => {
-            console.log(e);
-          });
-      } else {
-        alert('Needs a title');
+        if(data.title) {
+          BlogDataService.create(data)
+            .then(response => {
+              console.log(response.data);
+              if(this.isBlogsPage){
+                this.$parent.refreshList();
+              } else {
+                this.$router.push({ name: "blogs" });
+              }
+            })
+            .catch(e => {
+              console.log(e);
+            });
+        } else {
+          alert('Needs a title');
+        }
       }
     },
     getBlog(id) {
@@ -140,19 +142,20 @@ export default {
     },
 
     deleteBlog() {
-      BlogDataService.delete(this.currentBlog.id)
-      .then(response => {
-        console.log(response.data);
-        if(this.isBlogsPage){
-          this.$parent.refreshList();
-        } else {
-          this.$router.push({ name: "blogs" });
-        }
-      })
-      .catch(e => {
-        console.log(e);
-      });
-    
+      if(window.confirm('Are you sure you want to delete this blog?')) {
+        BlogDataService.delete(this.currentBlog.id)
+        .then(response => {
+          console.log(response.data);
+          if(this.isBlogsPage){
+            this.$parent.refreshList();
+          } else {
+            this.$router.push({ name: "blogs" });
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+      }
     }
   },
   mounted() {
