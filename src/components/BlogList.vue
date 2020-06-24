@@ -1,5 +1,5 @@
 <template>
-  <div class="list row">
+  <div class="blog-list row">
     <div class="col-md-8">
       <div class="input-group mb-3">
         <input v-on:input="searchTitle" type="text" class="form-control" placeholder="Search by title"
@@ -38,23 +38,7 @@
         <AddBlog></AddBlog>
       </div>
       <div v-else-if="currentBlog">
-        <div v-if="editView">
-          <EditBlog :id="currentBlog.id"></EditBlog>
-          <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
-              Hide Edit View
-          </button>
-        </div>
-        <div v-else>
-          <div>
-            <label><strong>Title:</strong></label><p v-html="currentBlog.title"></p>
-          </div>
-          <div class="pre-text">
-            <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
-          </div>
-          <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
-            Show Edit View
-          </button>
-        </div>
+        <EditBlog :id="currentBlog.id"></EditBlog>
       </div>
       <div v-else>
         <br />
@@ -86,10 +70,6 @@ export default {
     };
   },
   methods: {
-    urlify(text) {
-      var urlRegex = /\[(https?:\/\/[^\s]+)\]/g;
-      return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>')
-    },
     toggleEditView() {
       this.editView = this.editView ? false : true;
     },
@@ -136,14 +116,16 @@ export default {
     },
 
     removeBlog(id) {
-      BlogDataService.delete(id)
-        .then(response => {
-          console.log(response.data);
-          this.refreshList();
-        })
-        .catch(e => {
-          console.log(e);
-        });
+      if(window.confirm('Are you sure you want to delete this blog?')) {
+        BlogDataService.delete(id)
+          .then(response => {
+            console.log(response.data);
+            this.refreshList();
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
     },
     
     searchTitle() {
@@ -164,9 +146,5 @@ export default {
 </script>
 
 <style>
-.list {
-  text-align: left;
-  max-width: 90vw;
-  margin: auto;
-}
+
 </style>

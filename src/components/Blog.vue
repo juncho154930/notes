@@ -1,40 +1,55 @@
 <template>
   <div v-if="currentBlog" class="edit-form">
     <h4>Blog Edit</h4>
-    <form>
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input type="text" class="form-control" id="title"
-          v-model="currentBlog.title"
-        />
+    <div v-if="editView">
+      <form>
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title"
+            v-model="currentBlog.title"
+          />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea type="text" class="form-control" id="description"
+            v-model="currentBlog.description"></textarea>
+        </div>
+      </form>
+      <button type="submit" class="badge badge-primary mr-2"
+        @click="updateBlog"
+      >
+        Update
+      </button>
+
+      <button class="badge badge-info mr-2"
+        @click="duplicateBlog"
+      >
+        Duplicate
+      </button>
+
+      <button class="badge badge-danger mr-2"
+        @click="deleteBlog"
+      >
+        Delete
+      </button>
+      <br>
+      <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
+          Hide Edit View
+      </button>
+    </div>
+    <div v-else>
+      <div>
+        <label><strong>Title:</strong></label><p v-html="currentBlog.title"></p>
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea type="text" class="form-control" id="description"
-          v-model="currentBlog.description"></textarea>
+      <div class="pre-text">
+        <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
       </div>
-    </form>
-
-    <button type="submit" class="badge badge-primary mr-2"
-      @click="updateBlog"
-    >
-      Update
-    </button>
-
-    <button class="badge badge-info mr-2"
-      @click="duplicateBlog"
-    >
-      Duplicate
-    </button>
-
-    <button class="badge badge-danger mr-2"
-      @click="deleteBlog"
-    >
-      Delete
-    </button>
-
-    <a v-if="this.isBlogsPage" :href="'/blog/' + currentBlog.id" type="submit" class="badge badge-warning" >
-      Edit View
+      <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
+        Show Edit View
+      </button>
+    </div>
+    <a v-if="this.isBlogsPage" :href="'/blog/' + currentBlog.id" type="submit" class="mt-3 btn btn-sm btn-warning" >
+      Go To Blog
     </a>
     <p>{{ message }}</p>
   </div>
@@ -50,7 +65,8 @@ export default {
       currentBlog: null,
       message: '',
       routeId: this.id,
-      isBlogsPage: this.$route.name == "blog"
+      isBlogsPage: this.$route.name == "blog",
+      editView: false
     };
   },
   props: {
@@ -68,6 +84,13 @@ export default {
     }
   },
   methods: {
+    urlify(text) {
+      var urlRegex = /\[(https?:\/\/[^\s]+)\]/g;
+      return text.replace(urlRegex, '<a href="$1" target="_blank">$1</a>')
+    },
+    toggleEditView() {
+      this.editView = this.editView ? false : true;
+    },
     duplicateBlog(){
       var data = {
         title: this.currentBlog.title,
@@ -140,8 +163,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .edit-form {
   margin: auto;
+  textarea {
+    min-height: 300px;
+  }
 }
 </style>
