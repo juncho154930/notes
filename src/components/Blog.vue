@@ -142,7 +142,6 @@ export default {
 
 <style>
 .edit-form {
-  max-width: 300px;
   margin: auto;
 }
 </style>

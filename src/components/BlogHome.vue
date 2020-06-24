@@ -45,7 +45,7 @@
 <style>
 	.list {
 		text-align: left;
-		max-width: 750px;
+		max-width: 90vw;
 		margin: auto;
 	}
 </style>
