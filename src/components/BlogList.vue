@@ -23,6 +23,8 @@
           @click="setActiveBlog(blog, index)"
         >
           {{ blog.title }}
+          <br>
+          <span style="font-size: 12px;"><strong>Last Updated: </strong>{{ blog.timestamp }}</span>
           <button v-if="index == currentIndex" class="btn btn-sm btn-danger float-right" @click="removeBlog(currentBlog.id)">Delete</button>
         </li>
       </ul>

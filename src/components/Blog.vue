@@ -8,7 +8,6 @@
           <input type="text" class="form-control" id="title"
             v-model="currentBlog.title"
           />
-          <label><strong>Last Updated:</strong></label><p v-html="currentBlog.timestamp"></p>
         </div>
         <div class="form-group">
           <label for="description">Description</label>
