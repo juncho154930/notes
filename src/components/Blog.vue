@@ -8,6 +8,7 @@
           <input type="text" class="form-control" id="title"
             v-model="currentBlog.title"
           />
+          <label><strong>Last Updated:</strong></label><p v-html="currentBlog.timestamp"></p>
         </div>
         <div class="form-group">
           <label for="description">Description</label>
@@ -40,9 +41,6 @@
     <div v-else>
       <div>
         <label><strong>Title:</strong></label><p v-html="currentBlog.title"></p>
-      </div>
-      <div>
-        <label><strong>Last Updated:</strong></label><p v-html="currentBlog.timestamp"></p>
       </div>
       <div class="pre-text">
         <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
