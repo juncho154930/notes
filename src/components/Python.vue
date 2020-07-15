@@ -2,7 +2,6 @@
   <div>
     <div>
       <div>
-        This hasn't been implemented yet
         <!-- IMPORTANT PART! -->
         <form v-on:submit.prevent>
           <textarea
