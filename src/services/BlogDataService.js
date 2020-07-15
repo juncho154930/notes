@@ -1,6 +1,9 @@
 import http from "../http-common";
 
 class BlogDataService {
+
+  // Basic
+
   getAll() {
     return http.get("/blogs");
   }
@@ -29,12 +32,23 @@ class BlogDataService {
     return http.get(`/blogs?title=${title}`);
   }
 
+  // End Basic
+
   getNow() {
       const today = new Date();
       const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
       const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
       return date +' '+ time;
   }
+
+  // getAllSorted() {
+  //   return this.getAll()
+  //       .then(response => {
+  //         // this.blogs.sort((a, b) => a.name - b.name );
+  //         return response;
+  //       })
+  // }
+
 }
 
 export default new BlogDataService();

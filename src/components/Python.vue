@@ -1,12 +1,10 @@
 <template>
   <div>
-    <div
-      text-xs-center
-      wrap
-    >
+    <div>
       <div>
+        This hasn't been implemented yet
         <!-- IMPORTANT PART! -->
-<form v-on:submit.prevent>
+        <form v-on:submit.prevent>
           <textarea
             v-model="sepalLength"
             label="Sepal Length"
@@ -27,19 +25,19 @@
             label="Petal Width"
             required
           ></textarea>
-<button @click="submit">submit</button>
+          <button @click="submit">submit</button>
           <button @click="clear">clear</button>
         </form>
-<br/>
         <br/>
-<h1 v-if="predictedClass">Predicted Class is: {{ predictedClass }}</h1>
-<!-- END: IMPORTANT PART! -->
+        <h1 v-if="predictedClass">Predicted Class is: {{ predictedClass }}</h1>
+        <!-- END: IMPORTANT PART! -->
       </div>
+      <div></div>
     </div>
   </div>
 </template>
 <script>
-  import axios from 'axios'
+  import http from "../http-common";
 export default {
     name: 'HelloWorld',
     data: () => ({
@@ -50,16 +48,24 @@ export default {
       predictedClass : ''
     }),
     methods: {
-    submit () {
-      axios.post('http://127.0.0.1:5000/predict', {
-        sepal_length: this.sepalLength,
-        sepal_width: this.sepalWidth,
-        petal_length: this.petalLength,
-        petal_width: this.petalWidth
-      })
+    async submit () {
+      // axios.post('http://127.0.0.1:5000/predict', {
+      //   sepal_length: this.sepalLength,
+      //   sepal_width: this.sepalWidth,
+      //   petal_length: this.petalLength,
+      //   petal_width: this.petalWidth
+      // })
+      // .then((response) => {
+      //   this.predictedClass = response.data.class
+      // })
+      let data = [this.sepalLength, this.sepalWidth, this.petalLength, this.petalWidth];
+      await http.post('/pytest', { data })
       .then((response) => {
-        this.predictedClass = response.data.class
-      })
+        console.log(response.data);
+        this.predictedClass = response.data;
+      }, (error) => {
+        console.log(error);
+      });
     },
     clear () {
       this.sepalLength = ''

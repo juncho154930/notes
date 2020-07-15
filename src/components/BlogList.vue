@@ -89,6 +89,14 @@ export default {
         .catch(e => {
           console.log(e);
         });
+      // BlogDataService.getAllSorted()
+      //   .then(response => {
+      //     this.blogs = response.data;
+      //     console.log(response.data);
+      //   })
+      //   .catch(e => {
+      //     console.log(e);
+      //   });
     },
 
     refreshList() {

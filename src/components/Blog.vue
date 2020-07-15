@@ -41,12 +41,12 @@
       <div>
         <label><strong>Title:</strong></label><p v-html="currentBlog.title"></p>
       </div>
-      <div class="pre-text">
-        <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
-      </div>
       <button class="mt-3 btn btn-sm btn-info" @click="toggleEditView">
         Show Edit View
       </button>
+      <div class="pre-text">
+        <label><strong>Description:</strong></label><p v-html="urlify(currentBlog.description)"></p>
+      </div>
     </div>
     <a v-if="this.isBlogsPage" :href="'/blog/' + currentBlog.id" type="submit" class="mt-3 btn btn-sm btn-warning" >
       Go To Blog
