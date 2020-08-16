@@ -28,7 +28,8 @@
           <button @click="clear">clear</button>
         </form>
         <br/>
-        <h1 v-if="predictedClass">Predicted Class is: {{ predictedClass }}</h1>
+        <div v-if="loading">Loading ...</div>
+        <h1 v-else-if="predictedClass">Predicted Class is: {{ predictedClass }}</h1>
         <!-- END: IMPORTANT PART! -->
       </div>
       <div></div>
@@ -44,19 +45,13 @@ export default {
       sepalWidth: '',
       petalLength: '',
       petalWidth: '',
-      predictedClass : ''
+      predictedClass : '',
+      loading: false
     }),
     methods: {
     async submit () {
-      // axios.post('http://127.0.0.1:5000/predict', {
-      //   sepal_length: this.sepalLength,
-      //   sepal_width: this.sepalWidth,
-      //   petal_length: this.petalLength,
-      //   petal_width: this.petalWidth
-      // })
-      // .then((response) => {
-      //   this.predictedClass = response.data.class
-      // })
+      this.loading = true;
+      
       let data = [this.sepalLength, this.sepalWidth, this.petalLength, this.petalWidth];
       await http.post('/pytest', { data })
       .then((response) => {
@@ -64,7 +59,9 @@ export default {
         this.predictedClass = response.data;
       }, (error) => {
         console.log(error);
-      });
+      })
+
+      this.loading = false;
     },
     clear () {
       this.sepalLength = ''
