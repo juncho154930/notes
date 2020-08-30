@@ -33,7 +33,7 @@
       <router-view v-if="auth"/>
       <div v-else>
         Auth: 
-        <input type="text" class="form-control" placeholder="Pass" v-model="pass" />
+        <input type="password" class="form-control" placeholder="Pass" v-model="pass" />
           <button @click="checkAuth()">Submit</button>
       </div>
     </div>
