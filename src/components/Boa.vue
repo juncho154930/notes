@@ -205,6 +205,12 @@
 		<br>
 
 		<div>
+			Likes to Burrow
+			<br>
+			Likes to Climb
+		</div>
+
+		<div>
 			<p>Boa Constrictor Imperator - Columbian(?) Locality</p>
 			<p>
 				Genes: Possible Monster Tail | Possible Kubsch Pastel | 50% Het Anery | 100% Het VPI T+
