@@ -6,7 +6,7 @@ DB running: https://cloud.mongodb.com/
 
 
 
-# Advance AC
+# JC Notes
 
 ## Project setup
 ```

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href="/" class="navbar-brand">Advance AC</a>
+      <a href="/" class="navbar-brand">JC Notes</a>
       <div class="navbar-nav mr-auto">
         <div class="dropdown show">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -41,7 +41,7 @@
     <footer class="pt-4 my-md-5 pt-md-5 border-top container">
         <div class="row">
           <div class="col-12 col-md">
-            <small class="d-block mb-3 text-muted">© 2020 Advance AC | HVAC</small>
+            <small class="d-block mb-3 text-muted">© 2020 JC Notes | Dev</small>
           </div>
           <div class="col-6 col-md">
             <h5>Features</h5>
@@ -75,7 +75,7 @@ export default {
   },
   methods: {
     checkAuth() {
-      if(this.pass == '1234') {
+      if(this.pass == '1324') {
         this.auth = true;
         let d = new Date();                
         d.setTime(d.getTime() + (1*24*60*60*1000));
@@ -98,6 +98,19 @@ export default {
 }
 </script>
 <style lang="scss">
+body {
+  // background-image: url('~@/assets/img/site-background.jpg');
+  background-color: #507DBC;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.container {
+  padding: 2em;
+  font-size: 18px;
+  background-color: #555;
+  color: #d6d6d6;
+}
 #app {
   
 }

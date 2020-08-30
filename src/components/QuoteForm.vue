@@ -3,9 +3,9 @@
   <form class="columns" v-on:submit.prevent>
     <div class="column is-two-thirds">
       <section class="section">
-        <h1 class="title">Advance AC Rentals</h1>
+        <h1 class="title">JC Notes</h1>
         <p class="subtitle">
-          Find rental Ice machines with <strong>Advance AC</strong>!
+          Dev forms with <strong>JC Notes</strong>!
           <br>
           Request a Quote:
         </p>

@@ -63,10 +63,11 @@ export default {
         };
 
         if(data.title) {
+              console.log(data);
           BlogDataService.create(data)
             .then(response => {
               this.blog.id = response.data.id;
-              console.log(response.data);
+              // console.log(response.data);
               this.submitted = true;
               if(this.isBlogsPage){
                 this.$parent.refreshList();
