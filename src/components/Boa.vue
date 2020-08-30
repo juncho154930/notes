@@ -114,6 +114,96 @@
 			</div>
 		</div>
 
+
+		<div>
+			0M - 6M Hopper Mice
+			<br>
+			6M - 1Y Weaning Rat
+			<br>
+			1Y - 1.5Y Small Rat
+			<br>
+			1.5Y - 2.5Y Medium Rat
+			<br>
+			2.5Y - 4Y Large Rat
+			<br>
+			4Y+ Feed a little smaller than size at largest width
+			<br>
+		</div>
+
+		<br>
+
+		<div>
+			0 - 1Y 10-12 Days
+			<br>
+			1Y - 2Y 12- 14 Days
+			<br>
+			2Y - 3Y 14-21 Days
+			<br>
+			3Y - 4Y 14-30 Days
+			<br>
+			4Y+ 21-60 Days
+			<br>
+			Feed more frequently if preparing to breed.
+		</div>
+
+		<br>
+
+		<div>
+			Hot Spot: 88-90F
+			<br>
+			Humidity: 55-80% - more during shedding
+		</div>
+
+		<br>
+
+		<div>
+			<p>DFW Reptarium Prices: (Frozen)</p>
+			<ul>
+				Mice:
+				<li>Pinky: $1.19</li>
+				<li>Fuzzy: $1.49</li>
+				<li>Hopper: $1.99</li>
+				<li>Adult: $2.99</li>
+				<li>Jumbo: $3.99</li>
+			</ul>
+
+			<br>
+
+			<ul>
+				Rats:
+				<li>Pinky: $2.79</li>
+				<li>Fuzzy: $3.49</li>
+				<li>Pup: $3.99</li>
+				<li>Weaning: $4.49</li>
+				<li>Small: $5.49</li>
+				<li>Medium: $6.49</li>
+				<li>Large: $8.49</li>
+				<li>Jumbo: $9.99</li>
+				<li>Colossal: $11.99</li>
+			</ul>
+		</div>
+
+		<br>
+
+		<div>
+			Check for diseases
+			<ul>
+				<li>Scale Rot</li>
+				<li>IBD (Inclusion Body Disease)</li>
+				<li>Mites</li>
+				<li>Neurological disorders e.g. stargazing</li>
+				<li>Respiratory Infection</li>
+				<li>Nose rub</li>
+			</ul>
+		</div>
+
+		<div>
+			<p>Monthly Cleaning</p>
+			<p>Deep Cleaning</p>
+		</div>
+
+		<br>
+
 		<div>
 			<p>Boa Constrictor Imperator - Columbian(?) Locality</p>
 			<p>
