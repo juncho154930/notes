@@ -2,8 +2,7 @@
 	<div class="boa">
 		<h1>Maple (AKA May)</h1>
 		<ul>
-			<li>Allow way to add data</li>
-			<li>Add way to remove/modify data</li>
+			<li></li>
 		</ul>
 		<div class="schedule">
 			<div class="buttons">
@@ -16,6 +15,7 @@
 			<div class="lists">
 				<div class="update__message" :class="{active: updatedData == true}">Updated!</div>
 				<button @click="updateData()" class="update__button">Update Data</button>
+				<p>To Delete entry, just clear out date section</p>
 				<div v-if="showList == 'Record'" class="scheduleList">
 					<h1>Record</h1>
 					<table>
