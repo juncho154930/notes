@@ -75,7 +75,7 @@
 							<th>Note</th>
 						</tr>
 						<tr>
-							<td><input type="checkbox" v-model="addDataCleaning.Date"/></td>
+							<td><input type="checkbox" v-model="addDataCleaning.Completed"/></td>
 							<td><input type="text" v-model="addDataCleaning.Date"/></td>
 							<td><textarea v-model="addDataCleaning.Clean"></textarea></td>
 							<td><textarea v-model="addDataCleaning.Note"></textarea></td> 
