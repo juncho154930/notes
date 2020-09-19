@@ -52,6 +52,16 @@ export default new Router({
       path: "/py",
       name: "py",
       component: () => import("./components/Python")
+    },
+    {
+      path: "/maple",
+      name: "maple",
+      component: () => import("./components/Boa")
+    },
+    {
+      path: "/sundae",
+      name: "sundae",
+      component: () => import("./components/Sundae")
     }
   ]
 });

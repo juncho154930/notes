@@ -1,16 +1,16 @@
 <template>
-	<div class="boa">
-		<h1>Maple (AKA May)</h1>
+	<div class="sundae">
+		<h1>Sundae</h1>
 		<div>
-			<p>Boa Constrictor Imperator - Columbian(?) Locality</p>
+			<p>Pantherophis guttatus - Whiteout AKA Blizzard Diffused</p>
 			<p>
-				Genes: Possible Monster Tail | Possible Kubsch Pastel | 50% Het Anery | 100% Het VPI T+
+				Genes: Charcoal(Anery Type B) | Amel | Diffused 
 			</p>
 			<p>
-				Birthday: May 21, 2020
+				Birthday: June 14, 2020
 			</p>
 			<p>
-				Received: Aug 26, 2020
+				Received: Aug 15, 2020
 			</p>
 		</div>
 		<ul>
@@ -128,42 +128,23 @@
 
 
 		<div>
-			0M - 6M Hopper Mice
-			<br>
-			6M - 1Y Weaning Rat
-			<br>
-			1Y - 1.5Y Small Rat
-			<br>
-			1.5Y - 2.5Y Medium Rat
-			<br>
-			2.5Y - 4Y Large Rat
-			<br>
-			4Y+ Feed a little smaller than size at largest width
-			<br>
+			Feeding:
+			16-25 g snake - 2 pinkies 2-3 g each. 5-6 days<br>
+			26-50 g snake - 3-4 gram pinky/fuzzy mouse . 6-7 days<br>
+			50-80 g snake - 5-6 gram fuzzy mouse . 7 days<br>
+			81-125 g snake - 7-12 gram hopper mouse. 7 days<br>
+			126-175 g snake - 13-18 gram weanling mouse. 7 days<br>
+			176-300 g snake - 19-25 gram adult mouse. 10 days<br>
+			301+ g snake - 26-30 gram adult. 14 days<br>
+			Another chart: https://imgur.com/a/8yUcMFp<br>
 		</div>
-
+		
 		<br>
-
+		
 		<div>
-			0 - 1Y 10-12 Days
+			Temp range: 75-85
 			<br>
-			1Y - 2Y 12- 14 Days
-			<br>
-			2Y - 3Y 14-21 Days
-			<br>
-			3Y - 4Y 14-30 Days
-			<br>
-			4Y+ 21-60 Days
-			<br>
-			Feed more frequently if preparing to breed.
-		</div>
-
-		<br>
-
-		<div>
-			Hot Spot: 88-90F
-			<br>
-			Humidity: 55-80% - more during shedding
+			Humidity: 30-50
 		</div>
 
 		<br>
@@ -177,21 +158,6 @@
 				<li>Hopper: $1.99</li>
 				<li>Adult: $2.99</li>
 				<li>Jumbo: $3.99</li>
-			</ul>
-
-			<br>
-
-			<ul>
-				Rats:
-				<li>Pinky: $2.79</li>
-				<li>Fuzzy: $3.49</li>
-				<li>Pup: $3.99</li>
-				<li>Weaning: $4.49</li>
-				<li>Small: $5.49</li>
-				<li>Medium: $6.49</li>
-				<li>Large: $8.49</li>
-				<li>Jumbo: $9.99</li>
-				<li>Colossal: $11.99</li>
 			</ul>
 		</div>
 
@@ -208,32 +174,19 @@
 				<li>Nose rub</li>
 			</ul>
 		</div>
-
-		<div>
-			<p>Monthly Cleaning</p>
-			<p>Deep Cleaning</p>
-		</div>
-
-		<br>
-
-		<div>
-			Likes to Burrow
-			<br>
-			Likes to Climb
-		</div>
 	</div>
 </template>
 <script>
 	import GeneralDataService from "../services/GeneralDataService";
 
 	export default {
-		name: "BoaHome",
+		name: "Sundae",
 		data() {
 			return {
 				dataId: '',
 				data: [],
 				dbData: {
-					"subject": "Boa",
+					"subject": "Sundae",
 					data: {
 						Record: [],
 						Feeding: [],
@@ -256,7 +209,7 @@
 						console.log(response.data);
 
 						response.data.some((obj) => {
-							if(obj.subject == "Boa") {
+							if(obj.subject == "Sundae") {
 								this.dataId = obj.id;
 
 								this.dbData.data = obj.data;

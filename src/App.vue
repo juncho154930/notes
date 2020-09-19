@@ -23,8 +23,10 @@
             <a class="dropdown-item" href="/add">Add</a>
           </div>
         </div>
-        <a href="/quote" class="nav-link">Quote</a>
-        <a href="/py" class="nav-link">python</a>
+        <a href="/maple" class="nav-link">Maple</a>
+        <a href="/sundae" class="nav-link">Sundae</a>
+        <!-- <a href="/quote" class="nav-link">Quote</a>
+        <a href="/py" class="nav-link">python</a> -->
       </div>
       <div style="color:#fff">Call 1-800-XXX-XXXX</div>
     </nav>
