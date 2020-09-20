@@ -2,16 +2,16 @@
 	<div class="list">
 		<h4>Home</h4>
 
-        This is home
+        <SuggestionBoard></SuggestionBoard>
 	</div>
 </template>
 <script>
-
+import SuggestionBoard from "./SuggestionBoard";
 
 export default {
   name: "Home",
 	components: {
-    
+    'SuggestionBoard': SuggestionBoard
   }
 
 }

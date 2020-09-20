@@ -25,6 +25,7 @@
         </div>
         <a href="/maple" class="nav-link">Maple</a>
         <a href="/sundae" class="nav-link">Sundae</a>
+        <a href="/suggestionboard" class="nav-link">Suggestion Board</a>
         <!-- <a href="/quote" class="nav-link">Quote</a>
         <a href="/py" class="nav-link">python</a> -->
       </div>

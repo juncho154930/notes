@@ -62,6 +62,12 @@ export default new Router({
       path: "/sundae",
       name: "sundae",
       component: () => import("./components/Sundae")
+    },
+    {
+      path: "/suggestionboard",
+      name: "suggestionboard",
+      component: () => import("./components/SuggestionBoard")
     }
+
   ]
 });
