@@ -60,8 +60,8 @@
 				<input placeholder="Add new Suggestion" v-model="newSuggestion" />
 				<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
 				<h2>Current Topic: </h2>
+				<div v-html="currentTopic.Topic"></div>
 				<div class="suggestions__list">
-					<div v-html="currentTopic.Topic"></div>
 					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="suggestion">
 						<div v-html="suggestion.Suggestion"></div>
 						<div class="vote">
