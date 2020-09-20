@@ -1,62 +1,12 @@
 <template>
 	<div class="suggestionBoard">
-		<a href="https://www.strawpoll.me/" target="_blank">https://www.strawpoll.me/</a>
-		<h3>Welcome to Suggestion Board</h3>
-		<h4>Create suggestions for your next thing</h4>
-
 		<button @click="toggleAdmin">Toggle Admin</button>
+		<button @click="toggleResults">Toggle Results</button>
 		<div v-if="loading">
 			Loading...
 		</div>
-		<div class="board" v-else>			
-			<div class="topic">
-				<br>
-				<input placeholder="Add new Topic" v-model="newTopic" />
-				<!-- <div>
-					<input type="checkbox" id="1" name="1">
-				  	<label for="1">IP Duplication checking</label>
-				</div>
-				<div>
-					<input type="checkbox" id="2" name="2">
-				  	<label for="2">Cache Duplication checking</label>
-				</div>
-				<div>
-					<input type="checkbox" id="3" name="3">
-					<label for="3">No Dup checking</label>
-				</div>
-				<div>
-					<input type="checkbox" id="4" name="4">
-				  	<label for="4">Captcha required</label>
-				</div> -->
-				<p>
-					<button @click="addTopic()">Add Topic</button>
-				</p>
-			  	<!-- <div v-for="(note,n) in notes" :key="n">
-					<p>
-					<span class="cat">{{note}}</span> <button @click="removeSuggestion(n)">Remove</button>
-					</p>
-				</div> -->
-
-				<div>
-					<h2>Topics:</h2>
-					<div v-for="topic in data" :key="topic.id">
-						<h3 v-html="topic.Topic"></h3><div v-html="'Asked on: ' + topic.createdAt"></div>
-						<h4>Top 3 suggestions: </h4>
-						<div class="suggestions__list">
-							<div v-for="suggestion in topic.Suggestions.slice(0,3)" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}">
-								<div class="vote">
-									<strong><div v-html="suggestion.Suggestion"></div></strong> - -
-									Vote: <span v-html="suggestion.Vote.Yes - suggestion.Vote.No"></span>
-								</div>
-							</div>
-						</div>
-						
-						<button @click="chooseTopic(topic)">Choose This Topic</button>
-						<button @click="deleteTopic(topic.id)" v-if="isAdmin">Delete</button>
-					</div>
-				</div>
-			</div>
-			<div class="results" v-if="currentTopic.Topic">
+		<div class="board" v-else>
+			<div class="suggestions-container" v-if="currentTopic.Topic">
 				<input placeholder="Add new Suggestion" v-model="newSuggestion" />
 				<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
 				<h2>Current Topic: </h2>
@@ -74,6 +24,28 @@
 					</div>
 				</div>
 			</div>
+			<div class="results" v-if="currentTopic.Topic && showResults">
+				<h2>Results: </h2>
+				<h3 v-html="currentTopic.Topic"></h3>
+				<div class="results__list">
+					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="result">
+						<div class="title">
+							<div class="votes">
+								<div class="yesNo">
+									<div class="yes" v-html="suggestion.Vote.Yes"></div>
+									<div class="no" v-html="suggestion.Vote.No"></div>
+								</div>
+								<div class="total"  v-html="suggestion.Vote.Yes - suggestion.Vote.No"></div>
+							</div>
+							<div class="text">
+								<div v-html="suggestion.Suggestion"></div>
+								<div class="time" v-html="'Asked: ' + suggestion.Created + 'min ago'"></div>
+							</div>
+						</div>
+						<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" v-if="isAdmin">Delete</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -84,13 +56,16 @@
 		name: "SuggestionBoard",
 		data() {
 			return {
+				routeId: this.id,
 				loading: true,
 				isAdmin: false,
-				data: [],
-				newTopic: '',
 				newSuggestion: '',
 				currentTopic: {},
+				showResults: false
 			};
+		},
+		props: {
+			id: String
 		},
 		methods: {
 			toggleAdmin() {
@@ -100,14 +75,19 @@
 					this.isAdmin = true;
 				}
 			},
-			retrieveTopic () {
-				SuggestionDataService.getAll()
+			toggleResults() {
+				if(this.showResults) {
+					this.showResults = false;
+				} else {
+					this.showResults = true;
+				}
+			},
+			getTopic (id) {
+				SuggestionDataService.get(id)
 					.then(response => {
 						if(response.data) {
-							this.data = response.data;
-						} else {
-							this.createSuggestionBoardDB();
-						}
+							this.currentTopic = response.data;
+						} 
 
 						this.loading = false;
 					})
@@ -115,51 +95,6 @@
 						console.log(e);
 					});
 				
-			},
-			createSuggestionBoardDB () {
-		        if(this.data) {
-		          SuggestionDataService.create(this.data)
-		            .then(() => {
-		              this.retrieveTopic();
-		            })
-		            .catch(e => {
-		              console.log(e);
-		            });
-		        } else {
-		          alert('Needs Data');
-		        }
-		    },
-			addTopic() {
-				if(this.newTopic) {
-					let topicJSON = { 
-						"topic": this.newTopic,
-						"suggestions": [],
-						"timestamp": new Date()
-					};
-
-					SuggestionDataService.create(topicJSON)
-						.then(() => {
-							this.retrieveTopic();
-						})
-						.catch(e => {
-							console.log(e);
-						});
-				} else {
-					alert('Please fill in topic input field')
-				}
-				
-			},
-			deleteTopic(id) {
-				SuggestionDataService.delete(id)
-					.then(() => {
-						this.retrieveTopic();
-					})
-					.catch(e => {
-						console.log(e);
-					});
-			},
-			chooseTopic(topic) {
-				this.currentTopic = topic;
 			},
 			addSuggestion(topicId) {
 				if(this.currentTopic && this.newSuggestion) {
@@ -184,8 +119,7 @@
 								topicData.Suggestions.push(suggestionJSON);
 								SuggestionDataService.update(topicId, topicData)
 									.then(() => {
-										this.retrieveTopic();
-										this.chooseTopic(topicData);
+										this.getTopic(topicId);
 										this.newSuggestion = '';
 									})
 									.catch(e => {
@@ -219,8 +153,7 @@
 							}
 							SuggestionDataService.update(topicId, topicData)
 								.then(() => {
-									this.retrieveTopic();
-									this.chooseTopic(topicData);
+									this.getTopic(topicId);
 								})
 								.catch(e => {
 									console.log(e);
@@ -252,8 +185,7 @@
 							}
 							SuggestionDataService.update(topicId, topicData)
 								.then(() => {
-									this.retrieveTopic();
-									this.chooseTopic(topicData);
+									this.getTopic(topicId);
 								})
 								.catch(e => {
 									console.log(e);
@@ -267,7 +199,8 @@
 		    
 		},
 		mounted() {
-			this.retrieveTopic();
+			this.routeId = this.id ? this.id : this.$route.params.id;
+			this.currentTopic = this.getTopic(this.routeId);
 		}
 	};
 </script>
@@ -313,32 +246,7 @@ li {
 .board {
 	display: flex;
 }
-.topic {
-	flex: 1 1 50%;
-	input:not([type=checkbox]) {
-		width: 100%;
-		border: 1px solid black;
-		padding: 4px 10px;
-	}
-	textarea {
-		display: block;
-		resize: both;
-		padding: 5px 10px;
-		width: 100%;
-		max-width: 100%;
-		border: 0;
-		color: #000;
-	}
-	button {
-		padding: 2px 6px;
-		margin: 6px 0;
-		border-radius: 6px;
-		border: 1px solid black;
-		background-color: #333;
-		color: #fff;
-	}
-}
-.results {
+.suggestions-container {
 	flex: 1 1 50%;
 }
 
@@ -351,6 +259,46 @@ li {
 		}
 		.vote {
 			display: flex;
+		}
+	}
+}
+
+.results {
+	&__list {
+		display: flex;
+		flex-direction: column;
+		.result {
+			padding: 20px 0;
+			.title {
+				display: flex;
+				align-items: center;
+				.votes {
+					display: flex;
+					align-items: center;
+					border: 1px solid #000;
+					padding: 4px;
+					margin-right: 10px;
+					.total {
+						padding: 0 4px;
+					}
+					.yesNo {
+						display: flex;
+						flex-direction: column;
+						padding: 0 10px;
+					}
+					.yes {
+						color: rgb(44, 160, 44);
+					}
+					.no {
+						color: rgb(214, 39, 40);
+					}
+				}
+				.text {
+					.time {
+						font-size: 12px;
+					}
+				}
+			}
 		}
 	}
 }

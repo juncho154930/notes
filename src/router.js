@@ -65,6 +65,11 @@ export default new Router({
     },
     {
       path: "/suggestionboard",
+      name: "suggestionboard-home",
+      component: () => import("./components/SuggestionBoardHome")
+    },
+    {
+      path: "/suggestionboard/:id",
       name: "suggestionboard",
       component: () => import("./components/SuggestionBoard")
     }
