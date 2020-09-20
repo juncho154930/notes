@@ -57,6 +57,8 @@
 				</div>
 			</div>
 			<div class="results" v-if="currentTopic.Topic">
+				<input placeholder="Add new Suggestion" v-model="newSuggestion" />
+				<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
 				<h2>Current Topic: </h2>
 				<div class="suggestions__list">
 					<div v-html="currentTopic.Topic"></div>
@@ -71,8 +73,6 @@
 						<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" v-if="isAdmin">Delete</button>
 					</div>
 				</div>
-				<input placeholder="Add new Suggestion" v-model="newSuggestion" />
-				<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
 			</div>
 		</div>
 	</div>
@@ -319,7 +319,6 @@ li {
 		width: 100%;
 		border: 1px solid black;
 		padding: 4px 10px;
-		background-color: transparent;
 	}
 	textarea {
 		display: block;
@@ -328,7 +327,6 @@ li {
 		width: 100%;
 		max-width: 100%;
 		border: 0;
-		background-color: transparent;
 		color: #000;
 	}
 	button {
