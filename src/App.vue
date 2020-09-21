@@ -5,26 +5,14 @@
       <div class="navbar-nav mr-auto">
         <div class="dropdown show">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Rentals
+            Misc
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="/rentals">Rental</a>
-            <a class="dropdown-item" href="/rentals/info">Info</a>
-            <a class="dropdown-item" href="/rentals/cost">Cost</a>
-          </div>
-        </div>
-        <div class="dropdown show">
-          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Blog
-          </a>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="/bloghome">Blog Home</a>
             <a class="dropdown-item" href="/blog">Blog</a>
-            <a class="dropdown-item" href="/add">Add</a>
+            <a class="dropdown-item" href="/maple">Maple</a>
+            <a class="dropdown-item" href="/sundae">Sundae</a>
           </div>
         </div>
-        <a href="/maple" class="nav-link">Maple</a>
-        <a href="/sundae" class="nav-link">Sundae</a>
         <a href="/suggestionboard" class="nav-link">Suggestion Board</a>
         <!-- <a href="/quote" class="nav-link">Quote</a>
         <a href="/py" class="nav-link">python</a> -->

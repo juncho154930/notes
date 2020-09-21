@@ -125,6 +125,7 @@
 					SuggestionDataService.create(topicJSON)
 						.then(() => {
 							this.retrieveTopic();
+							this.newTopic = "";
 						})
 						.catch(e => {
 							console.log(e);
