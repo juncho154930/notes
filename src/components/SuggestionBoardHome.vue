@@ -8,32 +8,31 @@
 			Loading...
 		</div>
 		<div class="board" v-else>			
-			<div class="topic">
+			<div class="topic-container">
 				<br>
-				<input placeholder="Add new Topic" v-model="newTopic" />
-				<!-- <div>
-					<input type="checkbox" id="1" name="1">
-				  	<label for="1">IP Duplication checking</label>
-				</div>
-				<div>
-					<input type="checkbox" id="2" name="2">
-				  	<label for="2">Cache Duplication checking</label>
-				</div>
-				<div>
-					<input type="checkbox" id="3" name="3">
-					<label for="3">No Dup checking</label>
-				</div>
-				<div>
-					<input type="checkbox" id="4" name="4">
-				  	<label for="4">Captcha required</label>
-				</div> -->
-				<p>
+				<div class="new-topic">
+					<input placeholder="Add new Topic" v-model="newTopic" />
+					<div>
+						<input type="checkbox" id="1" name="1">
+					  	<label for="1">IP Duplication checking</label>
+					</div>
+					<div>
+						<input type="checkbox" id="2" name="2">
+					  	<label for="2">Cache Duplication checking</label>
+					</div>
+					<div>
+						<input type="checkbox" id="3" name="3">
+						<label for="3">No Dup checking</label>
+					</div>
+					<div>
+						<input type="checkbox" id="4" name="4">
+					  	<label for="4">Captcha required</label>
+					</div>
 					<button @click="addTopic()">Add Topic</button>
-				</p>
+				</div>
 
-				<div>
-					<h2>Topics:</h2>
-					<div v-for="topic in data" :key="topic.id">
+				<div class="topics">
+					<div v-for="topic in data" :key="topic.id" class="topic">
 						<h3 v-html="topic.Topic"></h3><div v-html="'Asked on: ' + topic.createdAt"></div>
 						<h4>Top 3 suggestions: </h4>
 						<div class="suggestions__list">
@@ -46,7 +45,7 @@
 						</div>
 						
 						<button @click="chooseTopic(topic)">Choose This Topic</button>
-						<a :href="'/suggestionboard/' + topic.id">Share</a>
+						<a :href="'/suggestionboard/' + topic.id">Share Link</a>
 						<button @click="deleteTopic(topic.id)" v-if="isAdmin">Delete</button>
 					</div>
 				</div>
@@ -157,7 +156,7 @@
 <style scoped lang="scss">
 
 * {
-	font-family: 'Comic Sans MS';	
+	font-family: 'Courier';	
 }
 h3 {
 	color: #c83232;
@@ -196,7 +195,7 @@ li {
 .board {
 	display: flex;
 }
-.topic {
+.topic-container {
 	flex: 1 1 50%;
 	input:not([type=checkbox]) {
 		width: 100%;
@@ -220,8 +219,35 @@ li {
 		background-color: #333;
 		color: #fff;
 	}
-}
-.results {
-	flex: 1 1 50%;
+	.new-topic {
+		padding: 10px;
+		margin-bottom: 10px;
+		background-color: #ccc;
+		border: 1px solid #000;
+		border-radius: 6px;
+
+	}
+	.topics {
+		padding: 10px;
+		border: 1px solid #000;
+		background-color: #b481ae;
+		border-radius: 6px;
+		.topic {
+			padding: 10px;
+			margin-bottom: 10px;
+			border: 1px solid #000;
+			background-color: #f49d02;
+			border-radius: 6px;
+			&:last-child {
+				margin-bottom: 0px;
+			}
+			a {
+				padding: 2px 4px;
+				background-color: #eee;
+				border: 1px solid black;
+				border-radius: 5px;
+			}
+		}
+	}
 }
 </style>
