@@ -8,31 +8,53 @@
             Misc
           </a>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="/blog">Blog</a>
-            <a class="dropdown-item" href="/maple">Maple</a>
-            <a class="dropdown-item" href="/sundae">Sundae</a>
+            <div class="dropdown-item">
+              <router-link to="/blog"
+                >Blog</router-link
+              >
+            </div>
+            <div class="dropdown-item">
+              <router-link to="/Maple"
+                >Maple</router-link
+              >
+            </div>
+            <div class="dropdown-item">
+              <router-link to="/Sundae"
+                >Sundae</router-link
+              >
+            </div>
           </div>
         </div>
-        <a href="/suggestionboard" class="nav-link">Suggestion Board</a>
+        <div class="dropdown-item">
+          <router-link to="/suggestionboard"
+            >Suggestion Board</router-link
+          >
+        </div>
         <!-- <a href="/quote" class="nav-link">Quote</a>
         <a href="/py" class="nav-link">python</a> -->
       </div>
-      <div style="color:#fff">Call 1-800-XXX-XXXX</div>
+      <div>
+        <div v-if="user.name && user.email">{{ user.name }} | {{ user.email }} | <a @click="logUserOut">Logout</a></div>
+        <div v-else>
+          <router-link to="/Login"
+            >Login</router-link
+          >
+          <router-link to="/Register"
+            >Register</router-link
+          >
+        </div>
+      </div>
     </nav>
 
     <div class="container mt-3 mb-3">
-      <router-view v-if="auth"/>
-      <div v-else>
-        Auth: 
-        <input type="password" class="form-control" placeholder="Pass" v-model="pass" />
-          <button @click="checkAuth()">Submit</button>
-      </div>
+      <router-view />
     </div>
 
     <footer class="pt-4 my-md-5 pt-md-5 border-top container">
         <div class="row">
           <div class="col-12 col-md">
             <small class="d-block mb-3 text-muted">© 2020 JC Notes | Dev</small>
+            NEED TO UPDATE ROUTER
           </div>
           <div class="col-6 col-md">
             <h5>Features</h5>
@@ -56,35 +78,37 @@
 </template>
 
 <script>
+import VueJwtDecode from "vue-jwt-decode";
+
 export default {
   name: 'app',
   data(){
     return{
-      auth: false,
-      pass: ""
+      user: {}
+    }
+  },
+  watch: {
+    $route (to, from){
+      if(from.path == "/Login" || from.path == "/Register") {
+        this.getUserDetails();
+      }
     }
   },
   methods: {
-    checkAuth() {
-      if(this.pass == '1324') {
-        this.auth = true;
-        let d = new Date();                
-        d.setTime(d.getTime() + (1*24*60*60*1000));
-        let expires = "expires="+ d.toUTCString();
-        document.cookie = "Auth=true;" + expires + ";";
-      } else {
-        alert('Invalid Pass');
+    getUserDetails() {
+      let token = localStorage.getItem("jwt");
+      if(token) {
+        let decoded = VueJwtDecode.decode(token);
+        this.user = decoded;
       }
     },
-    getCookie(name) {
-      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-      if (match) return match[2];
+    logUserOut() {
+      localStorage.removeItem("jwt");
+      this.$router.go()
     }
   },
   created(){
-    if (this.getCookie('Auth')) {
-      this.auth = true;
-    }
+    this.getUserDetails();
   }
 }
 </script>
@@ -103,6 +127,12 @@ body {
   color: #d6d6d6;
 }
 #app {
-  
+  a {
+    color: #ccc;
+    &:hover {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
 }
 </style>

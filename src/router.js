@@ -3,76 +3,136 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-export default new Router({
-  mode: "history",
-  routes: [
-    {
-      path: "/",
-      // alias: "/blog",
-      name: "home",
-      component: () => import("./components/Home")
-    },
-    {
-      path: "/bloghome",
-      // alias: "/blog",
-      name: "blohome",
-      component: () => import("./components/BlogHome")
-    },
-    {
-      path: "/blog",
-      name: "blog",
-      component: () => import("./components/BlogList")
-    },
-    {
-      path: "/blog/:id",
-      name: "blog-details",
-      component: () => import("./components/Blog")
-    },
-    {
-      path: "/add",
-      name: "add",
-      component: () => import("./components/AddBlog")
-    },
-    {
-      path: "/quote",
-      name: "quote",
-      component: () => import("./components/QuoteForm")
-    },
-    {
-      path: "/rentals/",
-      name: "rentals",
-      component: () => import("./components/Rentals")
-    },
-    {
-      path: "/rentals/:slug",
-      name: "rentals",
-      component: () => import("./components/Rentals")
-    },
-    {
-      path: "/py",
-      name: "py",
-      component: () => import("./components/Python")
-    },
-    {
-      path: "/maple",
-      name: "maple",
-      component: () => import("./components/Boa")
-    },
-    {
-      path: "/sundae",
-      name: "sundae",
-      component: () => import("./components/Sundae")
-    },
-    {
-      path: "/suggestionboard",
-      name: "suggestionboard-home",
-      component: () => import("./components/SuggestionBoardHome")
-    },
-    {
-      path: "/suggestionboard/:id",
-      name: "suggestionboard",
-      component: () => import("./components/SuggestionBoard")
+const routes = [
+  {
+    path: "/",
+    // alias: "/blog",
+    name: "home",
+    component: () => import("./components/Home"),
+  },
+  {
+    path: "/bloghome",
+    // alias: "/blog",
+    name: "blohome",
+    component: () => import("./components/BlogHome"),
+    meta: {
+      requiresAuth: true
     }
+  },
+  {
+    path: "/blog",
+    name: "blog",
+    component: () => import("./components/BlogList"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/blog/:id",
+    name: "blog-details",
+    component: () => import("./components/Blog"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/add",
+    name: "add",
+    component: () => import("./components/AddBlog"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/quote",
+    name: "quote",
+    component: () => import("./components/QuoteForm"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/rentals/",
+    name: "rentals",
+    component: () => import("./components/Rentals"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/rentals/:slug",
+    name: "rentals-details",
+    component: () => import("./components/Rentals"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/py",
+    name: "py",
+    component: () => import("./components/Python"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/maple",
+    name: "maple",
+    component: () => import("./components/Boa"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/sundae",
+    name: "sundae",
+    component: () => import("./components/Sundae"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/suggestionboard",
+    name: "suggestionboard-home",
+    component: () => import("./components/SuggestionBoardHome")
+  },
+  {
+    path: "/suggestionboard/:id",
+    name: "suggestionboard",
+    component: () => import("./components/SuggestionBoard")
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("./components/Login")
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("./components/Register")
+  },
+  {
+    path: "/*",
+    component: () => import("./components/404")
+  }
 
-  ]
+]
+
+const router = new Router({
+  mode: "history",
+  routes
 });
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (localStorage.getItem("jwt") == null) {
+      next({
+        path: "/Login"
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+export default router;

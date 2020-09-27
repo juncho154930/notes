@@ -9,14 +9,12 @@
 import SuggestionBoardHome from "./SuggestionBoardHome";
 
 export default {
-  name: "Home",
+	name: "Home",
 	components: {
-    'SuggestionBoardHome': SuggestionBoardHome
-  }
-
-}
+		'SuggestionBoardHome': SuggestionBoardHome
+	}
+};
 	
 </script>
-<style>
-	
+<style scoped lang="scss">
 </style>

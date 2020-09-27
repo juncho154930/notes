@@ -1,19 +1,22 @@
 <template>
 	<div class="suggestionBoard">
-		<button @click="toggleAdmin">Toggle Admin</button>
+		<button @click="setAdmin" v-if="user.email">Set Admin</button>
 		<button @click="toggleResults">Toggle Results</button>
 		<div v-if="loading">
 			Loading...
 		</div>
 		<div class="board" v-else>
 			<div class="suggestions-container" v-if="currentTopic.Topic">
-				<input placeholder="Add new Suggestion" v-model="newSuggestion" />
-				<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
 				<h2>Current Topic: </h2><a :href="'/suggestionboard/' + routeId">Share Link</a>
 				<div v-html="currentTopic.Topic"></div>
 				<div>
 					<input type="checkbox" id="show-finished" v-model="filterFinished">
 				  	<label for="show-finished">Hide Finished</label>
+				</div>
+				<div v-if="!user.email">Need to be logged in to add new Topic</div>
+				<div v-else>
+					<input placeholder="Add new Suggestion" v-model="newSuggestion" />
+					<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
 				</div>
 				<div class="suggestions__list" :class="{'filter-finished' : filterFinished}">
 					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="suggestion" :class="[suggestion.class]">
@@ -27,11 +30,13 @@
 							<div v-html="suggestion.Vote"></div>
 						</div>
 						<div v-if="suggestion.AuthorComment" v-html="'Author Comment: ' + suggestion.AuthorComment" class="title"></div>
-						<button @click="finishSuggestion(currentTopic.id, suggestion.Suggestion)" v-if="isAdmin">Finish</button>
-						<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" v-if="isAdmin">Delete</button>
-						<div>
+						<div v-if="isAdmin || currentTopic.Meta && user.email == currentTopic.Meta.CreatorEmail">
 							<input placeholder="Author Comment" v-model="suggestion.newAuthorComment" />
 							<button @click="addComment(currentTopic.id, suggestion.Suggestion, suggestion.newAuthorComment)">Add/edit Comment</button>
+						</div>
+						<div v-if="isAdmin || currentTopic.Meta && user.email == currentTopic.Meta.CreatorEmail">
+							<button @click="finishSuggestion(currentTopic.id, suggestion.Suggestion)" >Finish</button>
+							<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" >Delete</button>
 						</div>
 					</div>
 				</div>
@@ -54,7 +59,9 @@
 								<div class="time" v-html="'Asked: ' + suggestion.Created + 'min ago'"></div>
 							</div>
 						</div>
-						<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" v-if="isAdmin">Delete</button>
+						<div v-if="isAdmin || currentTopic.Meta && user.email == currentTopic.Meta.CreatorEmail">
+							<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" >Delete</button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -63,11 +70,15 @@
 </template>
 <script>
 	import SuggestionDataService from "../services/SuggestionDataService";
+	import UserDataService from "../services/UserDataService";
+
+	import VueJwtDecode from "vue-jwt-decode";
 
 	export default {
 		name: "SuggestionBoard",
 		data() {
 			return {
+				user: {},
 				routeId: this.id,
 				loading: true,
 				isAdmin: false,
@@ -86,12 +97,26 @@
 		    }
 		},
 		methods: {
-			toggleAdmin() {
-				if(this.isAdmin) {
-					this.isAdmin = false;
-				} else {
-					this.isAdmin = true;
-				}
+			getUserDetails() {
+				let token = localStorage.getItem("jwt");
+			      if(token) {
+			        let decoded = VueJwtDecode.decode(token);
+			        this.user = decoded;
+			        if(this.user.email) {
+			        	UserDataService.postUserDetails(this.user)
+				            .then(response => {
+								this.user = response.data;
+								
+				            })
+				            .catch(e => {
+				              console.log(e);
+				            });
+			        }
+			      }
+		      
+		    },
+			setAdmin() {
+				this.isAdmin = true;
 			},
 			toggleResults() {
 				if(this.showResults) {
@@ -116,15 +141,16 @@
 			},
 			addSuggestion(topicId) {
 				if(this.currentTopic && this.newSuggestion) {
-					let isNewTopic = true;
+					let isNewSuggestion = true;
 					this.currentTopic.Suggestions.some( (e) => {
 						if(this.newSuggestion == e.Suggestion) {
-							isNewTopic = false;
+							isNewSuggestion = false;
 						}
 					})
-					if( isNewTopic ) {
+					if( isNewSuggestion ) {
 						let suggestionJSON = {
 										"Suggestion": this.newSuggestion,
+										"User": this.user,
 										"Vote": {
 											"Yes": 0,
 											"No": 0
@@ -189,7 +215,7 @@
 						.then(response => {
 							let index = -1;
 							let topicData = response.data;
-							topicData.Suggestions.forEach((val, i) => {
+							topicData.Suggestions.some((val, i) => {
 								if( val.Suggestion == suggestion ) {
 									index = i;
 								}
@@ -215,35 +241,99 @@
 				}
 			},
 			voteSuggestion(topicId, suggestion, vote) {
-				if(this.currentTopic) {
-					SuggestionDataService.get(topicId)
-						.then(response => {
-							let index = -1;
-							let topicData = response.data;
-							topicData.Suggestions.forEach((val, i) => {
-								if( val.Suggestion == suggestion ) {
-									index = i;
-								}
-							})
-							if(index > -1) {
-								if(vote == "Up") {
-									topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes + 1;
-								} else if ( vote == "Down") {
-									topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No + 1;
+				if(this.user.email && this.currentTopic) {
+					let userData = this.user;
+					let voteValid = true;
+					let voteChange = false;
+			      	if(!userData.data) {
+			      		userData.data = {}
+			      	}
+			      	if(!userData.data.votes) {
+			      		userData.data.votes = []
+			      	}
+			      	userData.data.votes.some( (e) => {
+						if(topicId == e.topicId) {
+							if(suggestion == e.suggestion) {
+								if(vote == e.vote) {
+									voteValid = false;
+								} else {
+									voteChange = true;
 								}
 							}
-							SuggestionDataService.update(topicId, topicData)
-								.then(() => {
-									this.getTopic(topicId);
+						}
+					})
+					if(voteValid) {
+						SuggestionDataService.get(topicId)
+							.then(response => {
+								let index = -1;
+								let topicData = response.data;
+								topicData.Suggestions.some((val, i) => {
+									if( val.Suggestion == suggestion ) {
+										index = i;
+									}
 								})
-								.catch(e => {
-									console.log(e);
-								});
-						})
-						.catch(e => {
-							console.log(e);
-						});
+								if(index > -1) {
+									
+									if (voteChange) {
+										if(vote == "Up") {
+											topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes + 1;
+											topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No - 1;
+										} else if ( vote == "Down") {
+											topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No + 1;
+											topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes - 1;
+										}
+									} else {
+										if(vote == "Up") {
+											topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes + 1;
+										} else if ( vote == "Down") {
+											topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No + 1;
+										}
+									}
+									
+								}
+
+								let userVote = {
+						      						'topicId': topicId,
+						      						'suggestion': suggestion,
+						      						'vote': vote
+						      					}
+						      	if(voteChange) {
+						      		let voteIndex = -1
+						      		userData.data.votes.some((e, i) => {
+						      			if(e.suggestion == suggestion) {
+											voteIndex = i
+										}
+						      		})
+						      		userData.data.votes[voteIndex] = userVote;
+						      	} else {
+						      		userData.data.votes.push(userVote)
+						      	}
+						      	
+
+					          	UserDataService.updateData(userData)
+						            .then(response => {
+						              console.log(response);
+										SuggestionDataService.update(topicId, topicData)
+											.then(() => {
+												this.getTopic(topicId);
+										      	
+											})
+											.catch(e => {
+												console.log(e);
+											});
+						            })
+						            .catch(e => {
+						              console.log(e);
+						            });
+							})
+							.catch(e => {
+								console.log(e);
+							});
+					}
+				} else {
+					alert('Need to log in to vote');
 				}
+				
 			},
 			addComment(topicId, suggestion, authorComment) {
 				if(this.currentTopic) {
@@ -251,7 +341,7 @@
 						.then(response => {
 							let index = -1;
 							let topicData = response.data;
-							topicData.Suggestions.forEach((val, i) => {
+							topicData.Suggestions.some((val, i) => {
 								if( val.Suggestion == suggestion ) {
 									index = i;
 								}
@@ -278,7 +368,9 @@
 		},
 		mounted() {
 			this.routeId = this.id ? this.id : this.$route.params.id;
+			this.getUserDetails();
 			this.currentTopic = this.getTopic(this.routeId);
+
 		}
 	};
 </script>

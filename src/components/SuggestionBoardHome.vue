@@ -3,14 +3,14 @@
 		<h3>Welcome to Suggestion Board</h3>
 		<h4>Create suggestions for your next thing</h4>
 
-		<button @click="toggleAdmin">Toggle Admin</button>
+		<button @click="setAdmin" v-if="user.email">Set Admin</button>
 		<div v-if="loading">
 			Loading...
 		</div>
 		<div class="board" v-else>			
 			<div class="topic-container">
-				<br>
-				<div class="new-topic">
+				<div v-if="!user.email">Need to be logged in to add new Topic</div>
+				<div v-else class="new-topic">
 					<input placeholder="Add new Topic" v-model="newTopic" />
 					<div>
 						<input type="checkbox" id="1" name="1">
@@ -46,7 +46,10 @@
 						
 						<button @click="chooseTopic(topic)">Choose This Topic</button>
 						<a :href="'/suggestionboard/' + topic.id">Share Link</a>
-						<button @click="deleteTopic(topic.id)" v-if="isAdmin">Delete</button>
+						<div v-if="isAdmin || ( topic.Meta && user.email == topic.Meta.CreatorEmail )">
+							<button @click="deleteTopic(topic.id)">Delete</button>
+						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -60,6 +63,7 @@
 <script>
 	import SuggestionDataService from "../services/SuggestionDataService";
 	import SuggestionBoard from "./SuggestionBoard";
+	import VueJwtDecode from "vue-jwt-decode";
 
 	export default {
 		name: "SuggestionBoardHome",
@@ -68,6 +72,7 @@
 		},
 		data() {
 			return {
+				user: {},
 				loading: true,
 				isAdmin: false,
 				data: [],
@@ -76,13 +81,18 @@
 				currentTopic: {},
 			};
 		},
+		watch: {
+		},
 		methods: {
-			toggleAdmin() {
-				if(this.isAdmin) {
-					this.isAdmin = false;
-				} else {
-					this.isAdmin = true;
-				}
+			getUserDetails() {
+		      let token = localStorage.getItem("jwt");
+		      if(token) {
+		        let decoded = VueJwtDecode.decode(token);
+		        this.user = decoded;
+		      }
+		    },
+			setAdmin() {
+				this.isAdmin =  true;
 			},
 			retrieveTopic () {
 				SuggestionDataService.getAll()
@@ -117,6 +127,9 @@
 				if(this.newTopic) {
 					let topicJSON = { 
 						"topic": this.newTopic,
+						"meta": {
+							"CreatorEmail": this.user.email
+						},
 						"suggestions": [],
 						"timestamp": new Date()
 					};
@@ -135,13 +148,16 @@
 				
 			},
 			deleteTopic(id) {
-				SuggestionDataService.delete(id)
-					.then(() => {
-						this.retrieveTopic();
-					})
-					.catch(e => {
-						console.log(e);
-					});
+				if(confirm("Delete Topic?")) {
+					SuggestionDataService.delete(id)
+						.then(() => {
+							this.retrieveTopic();
+						})
+						.catch(e => {
+							console.log(e);
+						});
+				}
+				
 			},
 			chooseTopic(topic) {
 				this.currentTopic = topic;
@@ -150,6 +166,7 @@
 		},
 		mounted() {
 			this.retrieveTopic();
+			this.getUserDetails();
 		}
 	};
 </script>
