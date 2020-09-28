@@ -7,8 +7,9 @@
 		</div>
 		<div class="board" v-else>
 			<div class="suggestions-container" v-if="currentTopic.Topic">
-				<h2>Current Topic: </h2><a :href="'/suggestionboard/' + routeId">Share Link</a>
+				<h2>Current Topic: </h2>
 				<div v-html="currentTopic.Topic"></div>
+				<a :href="'/suggestionboard/' + routeId">Share</a>
 				<div>
 					<input type="checkbox" id="show-finished" v-model="filterFinished">
 				  	<label for="show-finished">Hide Finished</label>
@@ -22,14 +23,14 @@
 					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="suggestion" :class="[suggestion.class]">
 						<div v-html="suggestion.Suggestion" class="title"></div>
 						<div class="vote">
-							<div class="vote__buttons">
-								<button class="yes" @click="voteSuggestion(currentTopic.id, suggestion.Suggestion, 'Up')">^</button>
-								<button class="no" @click="voteSuggestion(currentTopic.id, suggestion.Suggestion, 'Down')">v</button>
+							<div class="vote__buttons" >
+								<button class="yes" @click="voteSuggestion(currentTopic.id, suggestion.Suggestion, 'Up')" :disabled="voteLoading == true">^</button>
+								<button class="no" @click="voteSuggestion(currentTopic.id, suggestion.Suggestion, 'Down')" :disabled="voteLoading == true">v</button>
 							</div>
 							Vote: <span v-html="suggestion.Vote.Yes - suggestion.Vote.No"></span>
 							<div v-html="suggestion.Vote"></div>
 						</div>
-						<div v-if="suggestion.AuthorComment" v-html="'Author Comment: ' + suggestion.AuthorComment" class="title"></div>
+						<div v-if="suggestion.AuthorComment" v-html="'Author Comment: ' + suggestion.AuthorComment" class="authorComment"></div>
 						<div v-if="isAdmin || currentTopic.Meta && user.email == currentTopic.Meta.CreatorEmail">
 							<input placeholder="Author Comment" v-model="suggestion.newAuthorComment" />
 							<button @click="addComment(currentTopic.id, suggestion.Suggestion, suggestion.newAuthorComment)">Add/edit Comment</button>
@@ -45,8 +46,8 @@
 				<h2>Results: </h2>
 				<h3 v-html="currentTopic.Topic"></h3>
 				<div class="results__list">
-					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="result">
-						<div class="title">
+					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="result" :class="[suggestion.class]">
+						<div class="result__detail">
 							<div class="votes">
 								<div class="yesNo">
 									<div class="yes" v-html="suggestion.Vote.Yes"></div>
@@ -55,7 +56,7 @@
 								<div class="total"  v-html="suggestion.Vote.Yes - suggestion.Vote.No"></div>
 							</div>
 							<div class="text">
-								<div v-html="suggestion.Suggestion"></div>
+								<div v-html="suggestion.Suggestion" class="title"></div>
 								<div class="time" v-html="'Asked: ' + suggestion.Created + 'min ago'"></div>
 							</div>
 						</div>
@@ -85,7 +86,8 @@
 				newSuggestion: '',
 				currentTopic: {},
 				showResults: false,
-				filterFinished: true
+				filterFinished: true,
+				voteLoading: false
 			};
 		},
 		props: {
@@ -109,7 +111,10 @@
 								
 				            })
 				            .catch(e => {
-				              console.log(e);
+				            	//logout if can't find user
+				            	localStorage.removeItem("jwt");
+				            	this.$router.go()
+								console.log(e);
 				            });
 			        }
 			      }
@@ -145,6 +150,7 @@
 					this.currentTopic.Suggestions.some( (e) => {
 						if(this.newSuggestion == e.Suggestion) {
 							isNewSuggestion = false;
+							return true;
 						}
 					})
 					if( isNewSuggestion ) {
@@ -218,6 +224,7 @@
 							topicData.Suggestions.some((val, i) => {
 								if( val.Suggestion == suggestion ) {
 									index = i;
+									return true;
 								}
 							})
 							if(index > -1) {
@@ -240,115 +247,135 @@
 
 				}
 			},
-			voteSuggestion(topicId, suggestion, vote) {
+			async voteSuggestion(topicId, suggestion, vote) {
+				this.voteLoading = true;
 				if(this.user.email && this.currentTopic) {
 					let userData = this.user;
-					let voteValid = true;
-					let voteChange = false;
+					let voteStatus = 'empty';
+					let newVoteTopicIndex = -1;
+					let voteNewSuggestion = true;
 			      	if(!userData.data) {
 			      		userData.data = {}
 			      	}
 			      	if(!userData.data.votes) {
 			      		userData.data.votes = []
 			      	}
-			      	userData.data.votes.some( (e) => {
-						if(topicId == e.topicId) {
-							if(suggestion == e.suggestion) {
-								if(vote == e.vote) {
-									voteValid = false;
-								} else {
-									voteChange = true;
-								}
+			      	userData.data.votes.some( (e, voteTopicIndex) => {
+						if( e.topicId == topicId ) {
+							newVoteTopicIndex = voteTopicIndex;
+							if(e.suggestions) {
+								e.suggestions.some( (f) => {
+									if( f.suggestion == suggestion ) {
+										if (f.vote == '') {
+											voteStatus = 'empty';
+										}
+										else if(vote == f.vote) {
+											voteStatus = 'same';
+										} else {
+											voteStatus = 'opposite';
+										}
+										voteNewSuggestion = false;
+										return true
+									}
+								})
+								return true
 							}
 						}
 					})
-					if(voteValid) {
-						SuggestionDataService.get(topicId)
-							.then(response => {
-								let index = -1;
-								let topicData = response.data;
-								topicData.Suggestions.some((val, i) => {
-									if( val.Suggestion == suggestion ) {
-										index = i;
-									}
-								})
-								if(index > -1) {
-									
-									if (voteChange) {
-										if(vote == "Up") {
-											topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes + 1;
-											topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No - 1;
-										} else if ( vote == "Down") {
-											topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No + 1;
-											topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes - 1;
-										}
-									} else {
-										if(vote == "Up") {
-											topicData.Suggestions[index].Vote.Yes = topicData.Suggestions[index].Vote.Yes + 1;
-										} else if ( vote == "Down") {
-											topicData.Suggestions[index].Vote.No = topicData.Suggestions[index].Vote.No + 1;
-										}
-									}
-									
-								}
+				
+					const topicDataResponse = await SuggestionDataService.get(topicId).catch(e => {
+							console.log(e);
+						});
+					let topicData = topicDataResponse.data;
+							topicData.Suggestions.some((val, i) => {
+								if( val.Suggestion == suggestion ) {
 
-								let userVote = {
-						      						'topicId': topicId,
+									if (voteNewSuggestion || voteStatus == 'empty') {
+										if(vote == "Up") {
+											topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes + 1;
+										} else if ( vote == "Down") {
+											topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No + 1;
+										}
+									} else  {
+										if(voteStatus == 'same') {
+											if(vote == "Up") {
+												topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes - 1;
+											} else if ( vote == "Down") {
+												topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No - 1;
+											}
+										} else { // voteStatus Opposite
+											if(vote == "Up") {
+												topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes + 1;
+												topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No - 1;
+											} else if ( vote == "Down") {
+												topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No + 1;
+												topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes - 1;
+											}
+										}
+									}
+									return true
+								}
+							})
+
+		      				
+				      		if(newVoteTopicIndex < 0) {
+				      			let newUserVoteList = {
+							      						'topicId': topicId,
+							      						'suggestions': [
+								      						{
+									      						'suggestion': suggestion,
+									      						'vote': vote
+								      						}
+							      						]
+							      					}
+				      			userData.data.votes.push(newUserVoteList)
+				      		}  else {
+		      					const foundExistingSuggestion = userData.data.votes[newVoteTopicIndex].suggestions.some((e, i) => {
+					      			if(e.suggestion == suggestion) {
+					      				if(voteStatus == 'same') {
+					      					userData.data.votes[newVoteTopicIndex].suggestions[i].vote = '';
+					      				} else {
+					      					userData.data.votes[newVoteTopicIndex].suggestions[i].vote = vote;
+					      				}
+										
+										return true
+									}
+					      		})
+					      		if( !foundExistingSuggestion ) {
+					      			let userVote = {
 						      						'suggestion': suggestion,
 						      						'vote': vote
-						      					}
-						      	if(voteChange) {
-						      		let voteIndex = -1
-						      		userData.data.votes.some((e, i) => {
-						      			if(e.suggestion == suggestion) {
-											voteIndex = i
-										}
-						      		})
-						      		userData.data.votes[voteIndex] = userVote;
-						      	} else {
-						      		userData.data.votes.push(userVote)
-						      	}
-						      	
+					      						}
+					      			userData.data.votes[newVoteTopicIndex].suggestions.push(userVote);
+					      		}
+				      		}
+				      		
+					      	
 
-					          	UserDataService.updateData(userData)
-						            .then(response => {
-						              console.log(response);
-										SuggestionDataService.update(topicId, topicData)
-											.then(() => {
-												this.getTopic(topicId);
-										      	
-											})
-											.catch(e => {
-												console.log(e);
-											});
-						            })
-						            .catch(e => {
-						              console.log(e);
-						            });
-							})
-							.catch(e => {
+		          	await UserDataService.updateData(userData).catch(e => {
+			              console.log(e);
+			            });
+		            await SuggestionDataService.update(topicId, topicData).catch(e => {
 								console.log(e);
 							});
-					}
+					this.getTopic(topicId);
+				
 				} else {
 					alert('Need to log in to vote');
 				}
-				
+				this.voteLoading = false;
 			},
 			addComment(topicId, suggestion, authorComment) {
 				if(this.currentTopic) {
 					SuggestionDataService.get(topicId)
 						.then(response => {
-							let index = -1;
 							let topicData = response.data;
 							topicData.Suggestions.some((val, i) => {
 								if( val.Suggestion == suggestion ) {
-									index = i;
+									topicData.Suggestions[i].AuthorComment = authorComment;
+									return true
 								}
 							})
-							if(index > -1) {
-								topicData.Suggestions[index].AuthorComment = authorComment;
-							}
 							SuggestionDataService.update(topicId, topicData)
 								.then(() => {
 									this.getTopic(topicId);
@@ -490,7 +517,12 @@ li {
 			border-radius: 6px;
 			margin-bottom: 10px;
 			padding: 20px 0 10px;
-			.title {
+			&.finished {
+				.title {
+					text-decoration: line-through;
+				}
+			}
+			&__detail {
 				display: flex;
 				align-items: center;
 				.votes {

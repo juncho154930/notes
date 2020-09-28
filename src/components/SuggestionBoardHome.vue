@@ -2,17 +2,26 @@
 	<div class="suggestionBoardHome">
 		<h3>Welcome to Suggestion Board</h3>
 		<h4>Create suggestions for your next thing</h4>
-
-		<button @click="setAdmin" v-if="user.email">Set Admin</button>
+		<div>
+			site changes WIP: 5f6717332eec38abb08b963b
+			<br>
+			misc: 5f6829944d537d001787038e
+			<br>
+			frontend changes: 5f6d6c188e69a8a10be00ac6
+			<br>
+			bugs: 5f708c0288f19dc173827855
+		</div>
+		<!-- <button @click="setAdmin" v-if="user.email">Set Admin</button> -->
 		<div v-if="loading">
 			Loading...
 		</div>
 		<div class="board" v-else>			
 			<div class="topic-container">
+				WIP: cache/IP/Captcha dup check
 				<div v-if="!user.email">Need to be logged in to add new Topic</div>
 				<div v-else class="new-topic">
 					<input placeholder="Add new Topic" v-model="newTopic" />
-					<div>
+					<!-- <div>
 						<input type="checkbox" id="1" name="1">
 					  	<label for="1">IP Duplication checking</label>
 					</div>
@@ -27,12 +36,12 @@
 					<div>
 						<input type="checkbox" id="4" name="4">
 					  	<label for="4">Captcha required</label>
-					</div>
+					</div> -->
 					<button @click="addTopic()">Add Topic</button>
 				</div>
-
+				<h2>Your Topics:</h2>
 				<div class="topics">
-					<div v-for="topic in data" :key="topic.id" class="topic">
+					<div v-for="topic in data" :key="topic.id" class="topic" >
 						<h3 v-html="topic.Topic"></h3><div v-html="'Asked on: ' + topic.createdAt"></div>
 						<h4>Top 3 suggestions: </h4>
 						<div class="suggestions__list">
@@ -94,11 +103,16 @@
 			setAdmin() {
 				this.isAdmin =  true;
 			},
-			retrieveTopic () {
+			retrieveAllTopic () {
 				SuggestionDataService.getAll()
 					.then(response => {
 						if(response.data) {
-							this.data = response.data;
+							response.data.forEach((e) => {
+								if(e.Meta && e.Meta.CreatorEmail == this.user.email) {
+									this.data.push(e)
+								}
+							})
+							
 						} else {
 							this.createSuggestionBoardDB();
 						}
@@ -114,7 +128,7 @@
 		        if(this.data) {
 		          SuggestionDataService.create(this.data)
 		            .then(() => {
-		              this.retrieveTopic();
+		              this.retrieveAllTopic();
 		            })
 		            .catch(e => {
 		              console.log(e);
@@ -136,7 +150,7 @@
 
 					SuggestionDataService.create(topicJSON)
 						.then(() => {
-							this.retrieveTopic();
+							this.retrieveAllTopic();
 							this.newTopic = "";
 						})
 						.catch(e => {
@@ -151,7 +165,8 @@
 				if(confirm("Delete Topic?")) {
 					SuggestionDataService.delete(id)
 						.then(() => {
-							this.retrieveTopic();
+							this.retrieveAllTopic();
+							this.currentTopic = {};
 						})
 						.catch(e => {
 							console.log(e);
@@ -165,7 +180,7 @@
 		    
 		},
 		mounted() {
-			this.retrieveTopic();
+			this.retrieveAllTopic();
 			this.getUserDetails();
 		}
 	};
