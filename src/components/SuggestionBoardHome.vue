@@ -10,6 +10,10 @@
 			frontend changes: 5f6d6c188e69a8a10be00ac6
 			<br>
 			bugs: 5f708c0288f19dc173827855
+			<br>
+			WIP: cache/IP/Captcha dup check
+			<br>
+			Site is up through https://cron-job.org/
 		</div>
 		<!-- <button @click="setAdmin" v-if="user.email">Set Admin</button> -->
 		<div v-if="loading">
@@ -17,7 +21,6 @@
 		</div>
 		<div class="board" v-else>			
 			<div class="topic-container">
-				WIP: cache/IP/Captcha dup check
 				<div v-if="!user.email">Need to be logged in to add new Topic</div>
 				<div v-else class="new-topic">
 					<input placeholder="Add new Topic" v-model="newTopic" />
