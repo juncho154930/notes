@@ -1,6 +1,6 @@
 <template>
 	<div class="suggestionBoard">
-		<button @click="setAdmin" v-if="user.email">Set Admin</button>
+		<!-- <button @click="setAdmin" v-if="user.email">Set Admin</button> -->
 		<button @click="toggleResults">Toggle Results</button>
 		<div v-if="loading">
 			Loading...
@@ -189,175 +189,49 @@
 			},
 			deleteSuggestion(topicId, suggestion) {
 				if(this.currentTopic) {
-					SuggestionDataService.get(topicId)
-						.then(response => {
-							let index = -1;
-							let topicData = response.data;
-							topicData.Suggestions.forEach((val, i) => {
-								if( val.Suggestion == suggestion ) {
-									index = i;
-								}
-							})
-							if(index > -1) {
-								topicData.Suggestions.splice(index, 1);
-							}
-							SuggestionDataService.update(topicId, topicData)
-								.then(() => {
-									this.getTopic(topicId);
-								})
-								.catch(e => {
-									console.log(e);
-								});
+					let index = -1;
+					let topicData = this.currentTopic;
+					topicData.Suggestions.forEach((val, i) => {
+						if( val.Suggestion == suggestion ) {
+							index = i;
+						}
+					})
+					if(index > -1) {
+						topicData.Suggestions.splice(index, 1);
+					}
+					SuggestionDataService.update(topicId, topicData)
+						.then(() => {
+							this.getTopic(topicId);
 						})
 						.catch(e => {
 							console.log(e);
 						});
-
 				}
 			},
-			finishSuggestion(topicId, suggestion) {
+			async finishSuggestion(topicId, suggestion) {
 				if(this.currentTopic) {
-					SuggestionDataService.get(topicId)
-						.then(response => {
-							let index = -1;
-							let topicData = response.data;
-							topicData.Suggestions.some((val, i) => {
-								if( val.Suggestion == suggestion ) {
-									index = i;
-									return true;
-								}
-							})
-							if(index > -1) {
-								if(!topicData.Suggestions[index].class) {
-									topicData.Suggestions[index].class = [];
-								}
-								topicData.Suggestions[index].class.push('finished');
-							}
-							SuggestionDataService.update(topicId, topicData)
-								.then(() => {
-									this.getTopic(topicId);
-								})
-								.catch(e => {
-									console.log(e);
-								});
-						})
-						.catch(e => {
-							console.log(e);
-						});
-
+					let suggestionJSON = { suggestion }
+					await SuggestionDataService.finishSuggestion(topicId, suggestionJSON).then( ()=> {
+						this.getTopic(topicId);
+					}).catch(e => {
+						console.log(e);
+					});
 				}
 			},
 			async voteSuggestion(topicId, suggestion, vote) {
 				this.voteLoading = true;
 				if(this.user.email && this.currentTopic) {
-					let userData = this.user;
-					let voteStatus = 'empty';
-					let newVoteTopicIndex = -1;
-					let voteNewSuggestion = true;
-			      	if(!userData.data) {
-			      		userData.data = {}
-			      	}
-			      	if(!userData.data.votes) {
-			      		userData.data.votes = []
-			      	}
-			      	userData.data.votes.some( (e, voteTopicIndex) => {
-						if( e.topicId == topicId ) {
-							newVoteTopicIndex = voteTopicIndex;
-							if(e.suggestions) {
-								e.suggestions.some( (f) => {
-									if( f.suggestion == suggestion ) {
-										if (f.vote == '') {
-											voteStatus = 'empty';
-										}
-										else if(vote == f.vote) {
-											voteStatus = 'same';
-										} else {
-											voteStatus = 'opposite';
-										}
-										voteNewSuggestion = false;
-										return true
-									}
-								})
-								return true
-							}
-						}
-					})
+					let voteData = {
+						"suggestion": suggestion,
+						"vote": vote,
+						"email": this.user.email
+					}
 				
-					const topicDataResponse = await SuggestionDataService.get(topicId).catch(e => {
-							console.log(e);
-						});
-					let topicData = topicDataResponse.data;
-							topicData.Suggestions.some((val, i) => {
-								if( val.Suggestion == suggestion ) {
+					await SuggestionDataService.updateVote(topicId, voteData).catch(e => {
+						console.log(e);
+					});
+					
 
-									if (voteNewSuggestion || voteStatus == 'empty') {
-										if(vote == "Up") {
-											topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes + 1;
-										} else if ( vote == "Down") {
-											topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No + 1;
-										}
-									} else  {
-										if(voteStatus == 'same') {
-											if(vote == "Up") {
-												topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes - 1;
-											} else if ( vote == "Down") {
-												topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No - 1;
-											}
-										} else { // voteStatus Opposite
-											if(vote == "Up") {
-												topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes + 1;
-												topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No - 1;
-											} else if ( vote == "Down") {
-												topicData.Suggestions[i].Vote.No = topicData.Suggestions[i].Vote.No + 1;
-												topicData.Suggestions[i].Vote.Yes = topicData.Suggestions[i].Vote.Yes - 1;
-											}
-										}
-									}
-									return true
-								}
-							})
-
-		      				
-				      		if(newVoteTopicIndex < 0) {
-				      			let newUserVoteList = {
-							      						'topicId': topicId,
-							      						'suggestions': [
-								      						{
-									      						'suggestion': suggestion,
-									      						'vote': vote
-								      						}
-							      						]
-							      					}
-				      			userData.data.votes.push(newUserVoteList)
-				      		}  else {
-		      					const foundExistingSuggestion = userData.data.votes[newVoteTopicIndex].suggestions.some((e, i) => {
-					      			if(e.suggestion == suggestion) {
-					      				if(voteStatus == 'same') {
-					      					userData.data.votes[newVoteTopicIndex].suggestions[i].vote = '';
-					      				} else {
-					      					userData.data.votes[newVoteTopicIndex].suggestions[i].vote = vote;
-					      				}
-										
-										return true
-									}
-					      		})
-					      		if( !foundExistingSuggestion ) {
-					      			let userVote = {
-						      						'suggestion': suggestion,
-						      						'vote': vote
-					      						}
-					      			userData.data.votes[newVoteTopicIndex].suggestions.push(userVote);
-					      		}
-				      		}
-				      		
-					      	
-
-		          	await UserDataService.updateData(userData).catch(e => {
-			              console.log(e);
-			            });
-		            await SuggestionDataService.update(topicId, topicData).catch(e => {
-								console.log(e);
-							});
 					this.getTopic(topicId);
 				
 				} else {

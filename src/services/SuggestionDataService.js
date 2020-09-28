@@ -30,6 +30,14 @@ class SuggestionDataService {
 
   // End Basic
 
+  finishSuggestion(id, suggestion) {
+    return http.put(`/suggestions/finishSuggestion/${id}`, suggestion);
+  }
+
+  updateVote(id, data) {
+    return http.put(`/suggestions/updateVote/${id}`, data);
+  }
+
   getNow() {
       const today = new Date();
       const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();

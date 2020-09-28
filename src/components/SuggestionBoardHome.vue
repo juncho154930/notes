@@ -110,6 +110,7 @@
 				SuggestionDataService.getAll()
 					.then(response => {
 						if(response.data) {
+							this.data = [];
 							response.data.forEach((e) => {
 								if(e.Meta && e.Meta.CreatorEmail == this.user.email) {
 									this.data.push(e)
