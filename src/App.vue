@@ -26,8 +26,8 @@
           </div>
         </div>
         <div class="dropdown-item">
-          <router-link to="/suggestionboard"
-            >Suggestion Board</router-link
+          <router-link to="/board"
+            >Board</router-link
           >
         </div>
         <!-- <a href="/quote" class="nav-link">Quote</a>
@@ -115,23 +115,21 @@ export default {
 <style lang="scss">
 body {
   // background-image: url('~@/assets/img/site-background.jpg');
-  background-color: #507DBC;
+  background-color: #121212;
   background-attachment: fixed;
   background-size: cover;
 }
 
 .container {
-  padding: 2em;
-  font-size: 18px;
-  background-color: #555;
-  color: #d6d6d6;
+  padding: 4px;
+  border-radius: 5px;
+  background-color: #484848;
+  color: #ededed;
 }
 #app {
   a {
-    color: #ccc;
     &:hover {
       cursor: pointer;
-      text-decoration: underline;
     }
   }
 }

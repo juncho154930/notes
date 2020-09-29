@@ -3,16 +3,6 @@
 		<h3>Welcome to Suggestion Board</h3>
 		<h4>Create suggestions for your next thing</h4>
 		<div>
-			site changes WIP: 5f6717332eec38abb08b963b
-			<br>
-			misc: 5f6829944d537d001787038e
-			<br>
-			frontend changes: 5f6d6c188e69a8a10be00ac6
-			<br>
-			bugs: 5f708c0288f19dc173827855
-			<br>
-			WIP: cache/IP/Captcha dup check
-			<br>
 			Site is up through https://cron-job.org/
 		</div>
 		<!-- <button @click="setAdmin" v-if="user.email">Set Admin</button> -->
@@ -42,22 +32,24 @@
 					</div> -->
 					<button @click="addTopic()">Add Topic</button>
 				</div>
-				<h2>Your Topics:</h2>
+				<h2>Your Topics</h2>
 				<div class="topics">
 					<div v-for="topic in data" :key="topic.id" class="topic" >
-						<h3 v-html="topic.Topic"></h3><div v-html="'Asked on: ' + topic.createdAt"></div>
-						<h4>Top 3 suggestions: </h4>
+						<div class="topic--title">
+							<h3 v-html="topic.Topic" class="text--emphasize"></h3><div v-html="'Asked on: ' + new Date(topic.createdAt).toLocaleDateString()" class="text--faded"></div>
+							<div v-html="timePassed(topic.createdAt)" ></div>
+						</div>
 						<div class="suggestions__list">
-							<div v-for="suggestion in topic.Suggestions.slice(0,3)" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}">
+							<div v-for="suggestion in topic.Suggestions.slice(0,3)" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" :class="[suggestion.class]">
 								<div class="vote">
-									<strong><div v-html="suggestion.Suggestion"></div></strong> - -
+									<strong><div v-html="suggestion.Suggestion" class="title"></div></strong> - -
 									Vote: <span v-html="suggestion.Vote.Yes - suggestion.Vote.No"></span>
 								</div>
 							</div>
 						</div>
 						
 						<button @click="chooseTopic(topic)">Choose This Topic</button>
-						<a :href="'/suggestionboard/' + topic.id">Share Link</a>
+						<a :href="'/board/' + topic.id">Share Link</a>
 						<div v-if="isAdmin || ( topic.Meta && user.email == topic.Meta.CreatorEmail )">
 							<button @click="deleteTopic(topic.id)">Delete</button>
 						</div>
@@ -180,6 +172,36 @@
 			},
 			chooseTopic(topic) {
 				this.currentTopic = topic;
+			},
+			timePassed(timestamp) {
+				let timeDiff = new Date(new Date() - new Date(timestamp));
+				let timeSeconds = Math.round(timeDiff.getTime() / 1000);
+				if( timeSeconds < 60 ) {
+					return "< 1min ago";
+				} else if ( timeSeconds < 3600 ) {
+					let min = Math.round(timeSeconds / 60);
+					if(min == 1) {
+						return min + " min ago";
+					} else {
+						return min + " mins ago";
+					}
+				} else if ( timeSeconds < 86400 ) {
+					let hour = Math.round(timeSeconds / 3600);
+					if(hour == 1) {
+						return hour + " hour ago";
+					} else {
+						return hour + " hours ago";
+					}
+				} else {
+					let day = Math.round(timeSeconds / 60);
+					if(day == 1) {
+						return day + " day ago";
+					} else {
+						return day + " days ago";
+					}
+				}
+
+				
 			}
 		    
 		},
@@ -192,40 +214,19 @@
 <style scoped lang="scss">
 
 * {
-	font-family: 'Courier';	
+	font-family: 'verdana';
 }
-h3 {
-	color: #c83232;
-}
-
-h4 {
-	margin-bottom: 20px;
-}
-
 p {
 	font-size: 18px;
-	padding: 10px 0;
-}
-li {
-	margin-left: 30px;
 }
 .suggestionBoardHome {
-	position: relative;
 	padding: 20px 10px 20px 50px;
+	border-radius: 5px;
 	min-height: 400px;
-	background-color: #ffd756;
-	color: rgb(33, 37, 41);
-	&::before {
-		content: '';
-		position: absolute;
-		pointer-events: none;
-		top: 0;
-		left: 25px;
-		bottom: 0;
-		width: 8px;
-		border: 2px solid #ca302c;
-		border-width: 0 2px;
-		z-index: 2;
+	background-color: #121212;
+	color: #e1e1e1;
+	h3 {
+		color: #dcdcdc;
 	}
 }
 .board {
@@ -233,6 +234,10 @@ li {
 }
 .topic-container {
 	flex: 1 1 50%;
+	h2 {
+		font-size: 24px;
+		margin-bottom: 10px;
+	}
 	input:not([type=checkbox]) {
 		width: 100%;
 		border: 1px solid black;
@@ -256,32 +261,78 @@ li {
 		color: #fff;
 	}
 	.new-topic {
-		padding: 10px;
+		padding: 20px 10px;
 		margin-bottom: 10px;
-		background-color: #ccc;
+		background-color: #1e1e1e;
 		border: 1px solid #000;
 		border-radius: 6px;
-
+		button {
+			padding: 8px 14px;
+			background-color: #c38fff;
+			color: #22182c;
+			text-transform: uppercase;
+			font-size: 14px;
+		}
 	}
 	.topics {
 		padding: 10px;
-		border: 1px solid #000;
-		background-color: #b481ae;
+		border: 1px solid #e1e1e1;
 		border-radius: 6px;
 		.topic {
 			padding: 10px;
 			margin-bottom: 10px;
 			border: 1px solid #000;
-			background-color: #f49d02;
+			background-color: #1e1e1e;
 			border-radius: 6px;
+			&:hover {
+				background-color: #2e2e2e;
+			}
 			&:last-child {
 				margin-bottom: 0px;
 			}
 			a {
-				padding: 2px 4px;
-				background-color: #eee;
-				border: 1px solid black;
+				padding: 10px 14px;
+				background-color: #c38fff;
+				color: #22182c;
+				text-transform: uppercase;
+				font-size: 14px;
 				border-radius: 5px;
+				&:hover {
+					text-decoration: none;
+				}
+			}
+			button {
+				padding: 8px 14px;
+				background-color: #c38fff;
+				color: #22182c;
+				text-transform: uppercase;
+				font-size: 14px;
+				outline: none;
+			}
+			&--title {
+				border: 1px solid black;
+				h3 {
+					margin: 10px 0;
+				}
+				.text {
+					&--emphasize {
+						color: #9c5cfc;
+					}
+					&--faded {
+
+						color: #7b7b7b;
+					}
+				}
+			}
+		}
+	}
+	.suggestions {
+		&__list {
+			border: 1px solid black;
+			.finished {
+				.title {
+					text-decoration: line-through;
+				}
 			}
 		}
 	}

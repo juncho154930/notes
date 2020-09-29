@@ -9,7 +9,7 @@
 			<div class="suggestions-container" v-if="currentTopic.Topic">
 				<h2>Current Topic: </h2>
 				<div v-html="currentTopic.Topic"></div>
-				<a :href="'/suggestionboard/' + routeId">Share</a>
+				<a :href="'/board/' + routeId">Share</a>
 				<div>
 					<input type="checkbox" id="show-finished" v-model="filterFinished">
 				  	<label for="show-finished">Hide Finished</label>
@@ -36,7 +36,7 @@
 							<button @click="addComment(currentTopic.id, suggestion.Suggestion, suggestion.newAuthorComment)">Add/edit Comment</button>
 						</div>
 						<div v-if="isAdmin || currentTopic.Meta && user.email == currentTopic.Meta.CreatorEmail">
-							<button @click="finishSuggestion(currentTopic.id, suggestion.Suggestion)" >Finish</button>
+							<button @click="toggleFinishSuggestion(currentTopic.id, suggestion.Suggestion)" >Toggle Finish</button>
 							<button @click="deleteSuggestion(currentTopic.id, suggestion.Suggestion)" >Delete</button>
 						</div>
 					</div>
@@ -208,7 +208,7 @@
 						});
 				}
 			},
-			async finishSuggestion(topicId, suggestion) {
+			async toggleFinishSuggestion(topicId, suggestion) {
 				if(this.currentTopic) {
 					let suggestionJSON = { suggestion }
 					await SuggestionDataService.finishSuggestion(topicId, suggestionJSON).then( ()=> {

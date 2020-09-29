@@ -2,19 +2,19 @@
 	<div class="list">
 		<h4>Home</h4>
 
-        <SuggestionBoardHome></SuggestionBoardHome>
+        <div>
+        	Check out the <router-link to="/board">Suggestion Board</router-link>
+        </div>
 	</div>
 </template>
 <script>
-import SuggestionBoardHome from "./SuggestionBoardHome";
-
 export default {
-	name: "Home",
-	components: {
-		'SuggestionBoardHome': SuggestionBoardHome
-	}
+	name: "Home"
 };
 	
 </script>
 <style scoped lang="scss">
+a {
+	color: #007bff;
+}
 </style>

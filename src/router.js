@@ -92,12 +92,12 @@ const routes = [
     }
   },
   {
-    path: "/suggestionboard",
+    path: "/board",
     name: "suggestionboard-home",
     component: () => import("./components/SuggestionBoardHome")
   },
   {
-    path: "/suggestionboard/:id",
+    path: "/board/:id",
     name: "suggestionboard",
     component: () => import("./components/SuggestionBoard")
   },
