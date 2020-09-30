@@ -52,22 +52,6 @@ const routes = [
     }
   },
   {
-    path: "/rentals/",
-    name: "rentals",
-    component: () => import("./components/Rentals"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/rentals/:slug",
-    name: "rentals-details",
-    component: () => import("./components/Rentals"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/py",
     name: "py",
     component: () => import("./components/Python"),
@@ -129,6 +113,15 @@ router.beforeEach((to, from, next) => {
         path: "/Login"
       });
     } else {
+      let token = localStorage.getItem("jwt");
+      if(token) {
+        let decoded = this.$VueJwtDecode.decode(token);
+        if (decoded.email != "jxc154930@gmail.com") {
+          next({
+            path: "/"
+          });
+        }
+      }
       next();
     }
   } else {

@@ -5,6 +5,10 @@
         <div>
         	Check out the <router-link to="/board">Suggestion Board</router-link>
         </div>
+        <div>
+			Ping from https://cron-job.org/
+		</div>
+		
 	</div>
 </template>
 <script>

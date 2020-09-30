@@ -30,6 +30,10 @@ class SuggestionDataService {
 
   // End Basic
 
+  addSuggestion(id, newSuggestion) {
+    return http.put(`/suggestions/addSuggestion/${id}`, newSuggestion);
+  }
+
   finishSuggestion(id, suggestion) {
     return http.put(`/suggestions/finishSuggestion/${id}`, suggestion);
   }

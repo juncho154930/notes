@@ -1,20 +1,20 @@
 <template>
-	<div class="suggestionBoard">
+	<div class="suggestion-board">
 		<!-- <button @click="setAdmin" v-if="user.email">Set Admin</button> -->
 		<button @click="toggleResults">Toggle Results</button>
 		<div v-if="loading">
 			Loading...
 		</div>
 		<div class="board" v-else>
-			<div class="suggestions-container" v-if="currentTopic.Topic">
-				<h2>Current Topic: </h2>
-				<div v-html="currentTopic.Topic"></div>
-				<a :href="'/board/' + routeId">Share</a>
-				<div>
+			<div class="suggestions-container" v-if="currentTopic">
+				<h2>Current Topic</h2>
+				<h3 v-html="currentTopic.Topic"></h3>
+				<router-link :to="'/board/' + routeId">Share</router-link>
+				<div class="filter-checkboxes">
 					<input type="checkbox" id="show-finished" v-model="filterFinished">
 				  	<label for="show-finished">Hide Finished</label>
 				</div>
-				<div v-if="!user.email">Need to be logged in to add new Topic</div>
+				<div v-if="!user.email">Please <router-link to="/login">Login</router-link> or <router-link to="/register">Register</router-link> to add Suggestions</div>
 				<div v-else>
 					<input placeholder="Add new Suggestion" v-model="newSuggestion" />
 					<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
@@ -24,8 +24,8 @@
 						<div v-html="suggestion.Suggestion" class="title"></div>
 						<div class="vote">
 							<div class="vote__buttons" >
-								<button class="yes" @click="voteSuggestion(currentTopic.id, suggestion.Suggestion, 'Up')" :disabled="voteLoading == true">^</button>
-								<button class="no" @click="voteSuggestion(currentTopic.id, suggestion.Suggestion, 'Down')" :disabled="voteLoading == true">v</button>
+								<button class="yes" @click="voteSuggestion(currentTopic.id, suggestion, 'Up')" :disabled="voteLoading == true">^</button>
+								<button class="no" @click="voteSuggestion(currentTopic.id, suggestion, 'Down')" :disabled="voteLoading == true">v</button>
 							</div>
 							Vote: <span v-html="suggestion.Vote.Yes - suggestion.Vote.No"></span>
 							<div v-html="suggestion.Vote"></div>
@@ -42,8 +42,8 @@
 					</div>
 				</div>
 			</div>
-			<div class="results" v-if="currentTopic.Topic && showResults">
-				<h2>Results: </h2>
+			<div class="results" v-if="currentTopic && showResults">
+				<h2>Results</h2>
 				<h3 v-html="currentTopic.Topic"></h3>
 				<div class="results__list">
 					<div v-for="suggestion in currentTopic.Suggestions" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" class="result" :class="[suggestion.class]">
@@ -73,8 +73,6 @@
 	import SuggestionDataService from "../services/SuggestionDataService";
 	import UserDataService from "../services/UserDataService";
 
-	import VueJwtDecode from "vue-jwt-decode";
-
 	export default {
 		name: "SuggestionBoard",
 		data() {
@@ -95,14 +93,14 @@
 		},
 		watch: {
 			id: function() {
-		      this.getTopic(this.id);
+				this.getTopic(this.id);
 		    }
 		},
 		methods: {
 			getUserDetails() {
 				let token = localStorage.getItem("jwt");
 			      if(token) {
-			        let decoded = VueJwtDecode.decode(token);
+			        let decoded = this.$VueJwtDecode.decode(token);
 			        this.user = decoded;
 			        if(this.user.email) {
 			        	UserDataService.postUserDetails(this.user)
@@ -135,13 +133,15 @@
 					.then(response => {
 						if(response.data) {
 							this.currentTopic = response.data;
+							this.routeId = this.currentTopic.id;
 						} 
 
-						this.loading = false;
 					})
 					.catch(e => {
 						console.log(e);
 					});
+
+				this.loading = false;
 				
 			},
 			addSuggestion(topicId) {
@@ -156,31 +156,27 @@
 					if( isNewSuggestion ) {
 						let suggestionJSON = {
 										"Suggestion": this.newSuggestion,
-										"User": this.user,
+										"User": { 
+											"name": this.user.name,
+											"email": this.user.email
+										},
 										"Vote": {
 											"Yes": 0,
 											"No": 0
 										},
+										"userVotes": [],
 										"Created": new Date()
 									};
-						SuggestionDataService.get(topicId)
-							.then(response => {
-								let topicData = response.data;
-								topicData.Suggestions.push(suggestionJSON);
-								SuggestionDataService.update(topicId, topicData)
-									.then(() => {
-										this.getTopic(topicId);
-										this.newSuggestion = '';
-									})
-									.catch(e => {
-										console.log(e);
-									});
-							})
-							.catch(e => {
-								console.log(e);
-							});
+
+						SuggestionDataService.addSuggestion(topicId, suggestionJSON).then(() => {
+							this.getTopic(topicId);
+							this.newSuggestion = '';
+						}).catch(e => {
+							console.log(e);
+						});
 
 					} else {
+						// voteSuggestion - ID depends on having unique suggestions per topic
 						alert('This Suggestion Already Exists');
 					}
 				} else {
@@ -220,11 +216,41 @@
 			},
 			async voteSuggestion(topicId, suggestion, vote) {
 				this.voteLoading = true;
-				if(this.user.email && this.currentTopic) {
+
+				let voteAllowed = true;
+				let userId = '';
+				let voteNotAllowedMessage = 'Vote Not Allowed';
+				// Check Cookies
+				if(this.currentTopic.Meta.CheckDup) {
+					if( this.currentTopic.Meta.CheckDup.loggedIn ) {
+						if(!this.user.email) {
+							voteAllowed = false;
+							voteNotAllowedMessage = 'Need to be logged in to vote'
+						} else {
+							userId = this.user._id;
+						}
+					} else if( this.currentTopic.Meta.CheckDup.cookie ) {
+						let topicSug = topicId + suggestion.Suggestion;
+						let sugUserVotes = 0;
+						if(suggestion.userVotes) {
+							sugUserVotes = suggestion.userVotes.length
+						}
+						let topicSugId = topicSug + sugUserVotes;
+						let currentCookie = this.$VueCookie.get(topicSug);
+						if(currentCookie) {
+							userId = currentCookie;
+						} else {
+							this.$VueCookie.set(topicSug, topicSugId, 365);
+							userId = topicSugId;
+						}
+						
+					}
+				}
+				if(voteAllowed && userId && this.currentTopic) {
 					let voteData = {
-						"suggestion": suggestion,
+						"suggestion": suggestion.Suggestion,
 						"vote": vote,
-						"email": this.user.email
+						"userId": userId
 					}
 				
 					await SuggestionDataService.updateVote(topicId, voteData).catch(e => {
@@ -235,7 +261,7 @@
 					this.getTopic(topicId);
 				
 				} else {
-					alert('Need to log in to vote');
+					alert(voteNotAllowedMessage);
 				}
 				this.voteLoading = false;
 			},
@@ -271,47 +297,39 @@
 			this.routeId = this.id ? this.id : this.$route.params.id;
 			this.getUserDetails();
 			this.currentTopic = this.getTopic(this.routeId);
-
 		}
 	};
 </script>
 <style scoped lang="scss">
-
-* {
-	font-family: 'Courier';	
-}
-h3 {
-	color: #c83232;
-}
-
-h4 {
-	margin-bottom: 20px;
-}
-
 p {
 	font-size: 18px;
-	padding: 10px 0;
 }
-li {
-	margin-left: 30px;
+input:not([type=checkbox]) {
+	width: 100%;
+	max-width: 600px;
+	padding: 8px 12px;
+	border-radius: 5px;
+	outline: none;
 }
-.suggestionBoard {
-	position: relative;
-	padding: 20px 10px 20px 50px;
+.suggestion-board {
+	padding: 16px 30px;
+	margin: auto 10px;
 	min-height: 400px;
-	background-color: #ffd756;
-	color: rgb(33, 37, 41);
-	&::before {
-		content: '';
-		position: absolute;
-		pointer-events: none;
-		top: 0;
-		left: 25px;
-		bottom: 0;
-		width: 8px;
-		border: 2px solid #ca302c;
-		border-width: 0 2px;
-		z-index: 2;
+	background-color: #2e2e2e;
+	border: 1px solid #fff;
+	border-radius: 5px;
+
+	button {
+		padding: 8px 14px;
+		margin: 6px 0;
+		border-radius: 6px;
+		border: 1px solid black;
+		background-color: #c38fff;
+		color: #22182c;
+		text-transform: uppercase;
+		font-size: 14px;
+		font-weight: 900;
+		outline: none;
 	}
 }
 .board {
@@ -320,15 +338,38 @@ li {
 .suggestions-container {
 	flex: 1 1 50%;
 	padding: 10px;
-	border: 1px solid #000;
-	background-color: #ccc;
+	border: 1px solid #fff;
 	border-radius: 6px;
 	margin-right: 10px;
+	h2 {
+		color: #9c5cfc;
+	}
+	h3 {
+		margin-bottom: 6px;
+	}
 	a {
-		padding: 2px 4px;
-		background-color: #eee;
+	    padding: 10px 14px;
+	    background-color: #c38fff;
+	    color: #22182c;
+	    text-transform: uppercase;
+	    font-size: 14px;
+	    font-weight: 900;
+	    border-radius: 5px;
+	}
+	button {
+		padding: 8px 14px;
+		margin: 6px 0;
+		border-radius: 6px;
 		border: 1px solid black;
-		border-radius: 5px;
+		background-color: #c38fff;
+		color: #22182c;
+		text-transform: uppercase;
+		font-size: 14px;
+		font-weight: 900;
+		outline: none;
+	}
+	.filter-checkboxes  {
+		margin: 14px 0 6px;
 	}
 	.suggestions {
 
@@ -342,7 +383,6 @@ li {
 			}
 			.suggestion {
 				border: 1px solid #000;
-				background-color: #fff;
 				border-radius: 6px;
 				margin-bottom: 10px;
 				padding: 20px 0 10px;
@@ -379,15 +419,27 @@ li {
 
 .results {
 	padding: 10px;
-	border: 1px solid #000;
-	background-color: #ddd;
+	border: 1px solid #fff;
 	border-radius: 6px;
+	h2 {
+		color: #9c5cfc;
+	}
+	button {
+		padding: 8px 14px;
+		margin: 6px 0;
+		border-radius: 6px;
+		border: 1px solid black;
+		background-color: #c38fff;
+		color: #22182c;
+		text-transform: uppercase;
+		font-size: 14px;
+		outline: none;
+	}
 	&__list {
 		display: flex;
 		flex-direction: column;
 		.result {
-			border: 1px solid #000;
-			background-color: #fff;
+			border: 1px solid #fff;
 			border-radius: 6px;
 			margin-bottom: 10px;
 			padding: 20px 0 10px;

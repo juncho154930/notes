@@ -2,34 +2,38 @@
 	<div class="suggestionBoardHome">
 		<h3>Welcome to Suggestion Board</h3>
 		<h4>Create suggestions for your next thing</h4>
-		<div>
-			Site is up through https://cron-job.org/
-		</div>
 		<!-- <button @click="setAdmin" v-if="user.email">Set Admin</button> -->
 		<div v-if="loading">
 			Loading...
 		</div>
 		<div class="board" v-else>			
 			<div class="topic-container">
-				<div v-if="!user.email">Need to be logged in to add new Topic</div>
+				<div v-if="!user.email"><div v-if="!user.email">Please <router-link to="/login">Login</router-link> or <router-link to="/register">Register</router-link> to add a Topic</div></div>
 				<div v-else class="new-topic">
 					<input placeholder="Add new Topic" v-model="newTopic" />
-					<!-- <div>
-						<input type="checkbox" id="1" name="1">
-					  	<label for="1">IP Duplication checking</label>
+					<!-- 
+					Only Login<br>
+					Only Cookie<br>
+					Only IP<br>
+					Cookie and IP 
+					-->
+					FYI: If you check login there's no need to check cookies
+					<div>
+						<input type="checkbox" id="checkLoggedIn" v-model="checkDup.loggedIn">
+					  	<label for="checkLoggedIn">Check User Logged in</label>
 					</div>
 					<div>
-						<input type="checkbox" id="2" name="2">
-					  	<label for="2">Cache Duplication checking</label>
+						<input type="checkbox" id="checkCookie" v-model="checkDup.cookie">
+					  	<label for="checkCookie">Browser Cookie Duplication checking</label>
 					</div>
 					<div>
-						<input type="checkbox" id="3" name="3">
-						<label for="3">No Dup checking</label>
+						<input type="checkbox" id="1">
+					  	<label for="1">[NOT IN USE] IP Duplication checking</label>
 					</div>
 					<div>
-						<input type="checkbox" id="4" name="4">
-					  	<label for="4">Captcha required</label>
-					</div> -->
+						<input type="checkbox" id="2">
+					  	<label for="2">[NOT IN USE] Captcha required</label>
+					</div>
 					<button @click="addTopic()">Add Topic</button>
 				</div>
 				<h2>Your Topics</h2>
@@ -40,7 +44,7 @@
 							<div v-html="timePassed(topic.createdAt)" ></div>
 						</div>
 						<div class="suggestions__list">
-							<div v-for="suggestion in topic.Suggestions.slice(0,3)" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" :class="[suggestion.class]">
+							<div v-for="suggestion in getMostRelavantSuggestions(topic.Suggestions, 3)" :key="suggestion.Suggestion" :style="{ order: suggestion.Vote.No - suggestion.Vote.Yes}" :class="[suggestion.class]">
 								<div class="vote">
 									<strong><div v-html="suggestion.Suggestion" class="title"></div></strong> - -
 									Vote: <span v-html="suggestion.Vote.Yes - suggestion.Vote.No"></span>
@@ -49,7 +53,7 @@
 						</div>
 						
 						<button @click="chooseTopic(topic)">Choose This Topic</button>
-						<a :href="'/board/' + topic.id">Share Link</a>
+						<router-link :to="'/board/' + topic.id">Share Link</router-link>
 						<div v-if="isAdmin || ( topic.Meta && user.email == topic.Meta.CreatorEmail )">
 							<button @click="deleteTopic(topic.id)">Delete</button>
 						</div>
@@ -57,17 +61,15 @@
 					</div>
 				</div>
 			</div>
-			<div v-if="currentTopic.Topic">
+			<div v-if="currentTopic.id">
 				<SuggestionBoard :id="currentTopic.id"></SuggestionBoard>
 			</div>
-			
 		</div>
 	</div>
 </template>
 <script>
 	import SuggestionDataService from "../services/SuggestionDataService";
 	import SuggestionBoard from "./SuggestionBoard";
-	import VueJwtDecode from "vue-jwt-decode";
 
 	export default {
 		name: "SuggestionBoardHome",
@@ -83,6 +85,11 @@
 				newTopic: '',
 				newSuggestion: '',
 				currentTopic: {},
+				currentTopicId: '',
+				checkDup: {
+					loggedIn: true,
+					cookie: true
+				}
 			};
 		},
 		watch: {
@@ -91,7 +98,7 @@
 			getUserDetails() {
 		      let token = localStorage.getItem("jwt");
 		      if(token) {
-		        let decoded = VueJwtDecode.decode(token);
+		        let decoded = this.$VueJwtDecode.decode(token);
 		        this.user = decoded;
 		      }
 		    },
@@ -138,7 +145,8 @@
 					let topicJSON = { 
 						"topic": this.newTopic,
 						"meta": {
-							"CreatorEmail": this.user.email
+							"CreatorEmail": this.user.email,
+							"CheckDup": this.checkDup
 						},
 						"suggestions": [],
 						"timestamp": new Date()
@@ -173,6 +181,18 @@
 			chooseTopic(topic) {
 				this.currentTopic = topic;
 			},
+			getMostRelavantSuggestions(suggestions, maxSuggestions) {
+				suggestions.filter ( i => !(i.class && i.class.includes('finished')) )
+				let count = 0;
+				const filtered = suggestions.filter ( i => {
+					if(count < maxSuggestions && !(i.class && i.class.includes('finished'))) {
+						count++;
+						return true;
+					} else return false;
+					
+				} );
+				return filtered;
+			},
 			timePassed(timestamp) {
 				let timeDiff = new Date(new Date() - new Date(timestamp));
 				let timeSeconds = Math.round(timeDiff.getTime() / 1000);
@@ -193,15 +213,13 @@
 						return hour + " hours ago";
 					}
 				} else {
-					let day = Math.round(timeSeconds / 60);
+					let day = Math.round(timeSeconds / 86400);
 					if(day == 1) {
 						return day + " day ago";
 					} else {
 						return day + " days ago";
 					}
 				}
-
-				
 			}
 		    
 		},
@@ -212,15 +230,30 @@
 	};
 </script>
 <style scoped lang="scss">
-
-* {
-	font-family: 'verdana';
-}
 p {
 	font-size: 18px;
 }
+a {
+	padding: 10px 14px;
+	background-color: #c38fff;
+	color: #22182c;
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 900;
+	border-radius: 5px;
+	&:hover {
+		text-decoration: none;
+	}
+}
+input:not([type=checkbox]) {
+	width: 100%;
+	max-width: 600px;
+	padding: 8px 12px;
+	border-radius: 5px;
+	outline: none;
+}
 .suggestionBoardHome {
-	padding: 20px 10px 20px 50px;
+	padding: 10px;
 	border-radius: 5px;
 	min-height: 400px;
 	background-color: #121212;
@@ -238,11 +271,6 @@ p {
 		font-size: 24px;
 		margin-bottom: 10px;
 	}
-	input:not([type=checkbox]) {
-		width: 100%;
-		border: 1px solid black;
-		padding: 4px 10px;
-	}
 	textarea {
 		display: block;
 		resize: both;
@@ -259,8 +287,11 @@ p {
 		border: 1px solid black;
 		background-color: #333;
 		color: #fff;
+		font-weight: 900;
 	}
 	.new-topic {
+		width: 100%;
+		max-width: 600px;
 		padding: 20px 10px;
 		margin-bottom: 10px;
 		background-color: #1e1e1e;
@@ -289,17 +320,6 @@ p {
 			}
 			&:last-child {
 				margin-bottom: 0px;
-			}
-			a {
-				padding: 10px 14px;
-				background-color: #c38fff;
-				color: #22182c;
-				text-transform: uppercase;
-				font-size: 14px;
-				border-radius: 5px;
-				&:hover {
-					text-decoration: none;
-				}
 			}
 			button {
 				padding: 8px 14px;

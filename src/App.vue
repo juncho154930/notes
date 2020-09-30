@@ -3,7 +3,7 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
       <a href="/" class="navbar-brand">JC Notes</a>
       <div class="navbar-nav mr-auto">
-        <div class="dropdown show">
+        <div class="dropdown show" v-if="user.email == 'jxc154930@gmail.com'">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Misc
           </a>
@@ -78,8 +78,6 @@
 </template>
 
 <script>
-import VueJwtDecode from "vue-jwt-decode";
-
 export default {
   name: 'app',
   data(){
@@ -98,7 +96,7 @@ export default {
     getUserDetails() {
       let token = localStorage.getItem("jwt");
       if(token) {
-        let decoded = VueJwtDecode.decode(token);
+        let decoded = this.$VueJwtDecode.decode(token);
         this.user = decoded;
       }
     },
