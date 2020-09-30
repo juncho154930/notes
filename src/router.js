@@ -1,6 +1,9 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+import VueJwtDecode from "vue-jwt-decode";
+Vue.prototype.$VueJwtDecode = VueJwtDecode; 
+
 Vue.use(Router);
 
 const routes = [
