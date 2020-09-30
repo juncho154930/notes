@@ -2,7 +2,6 @@ import Vue from "vue";
 import Router from "vue-router";
 
 import VueJwtDecode from "vue-jwt-decode";
-Vue.prototype.$VueJwtDecode = VueJwtDecode; 
 
 Vue.use(Router);
 
@@ -118,7 +117,7 @@ router.beforeEach((to, from, next) => {
     } else {
       let token = localStorage.getItem("jwt");
       if(token) {
-        let decoded = this.$VueJwtDecode.decode(token);
+        let decoded = VueJwtDecode.decode(token);
         if (decoded.email != "jxc154930@gmail.com") {
           next({
             path: "/"
