@@ -319,7 +319,6 @@
 				this.updatedData = true;
 				setTimeout(()=> {
 					this.updatedData = false
-					console.log('test');
 				},1000);
 				
 		    },

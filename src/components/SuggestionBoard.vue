@@ -9,12 +9,21 @@
 			<div class="suggestions-container" v-if="currentTopic">
 				<h2>Current Topic</h2>
 				<h3 v-html="currentTopic.Topic"></h3>
-				<router-link :to="'/board/' + routeId">Share</router-link>
+				<div>
+					<input type="text" :id="shareLink" :value="shareLink" readonly>
+					<button @click="copyToClipboard(shareLink)">Copy</button>
+					<div class="copiedText" :class="{active: copiedLink == true}">Copied!</div>
+				</div>
 				<div class="filter-checkboxes">
 					<input type="checkbox" id="show-finished" v-model="filterFinished">
 				  	<label for="show-finished">Hide Finished</label>
 				</div>
-				<div v-if="!user.email">Please <router-link to="/login">Login</router-link> or <router-link to="/register">Register</router-link> to add Suggestions</div>
+				<div v-if="!user.email">
+					<p>
+						Please <router-link :to="'/Login?id=' + routeId">Login</router-link> or <router-link :to="'/Register?id=' + routeId">Register</router-link> to add Suggestions
+					</p>
+					<br>
+				</div>
 				<div v-else>
 					<input placeholder="Add new Suggestion" v-model="newSuggestion" />
 					<button @click="addSuggestion(currentTopic.id)">Add Suggestion</button>
@@ -81,11 +90,13 @@
 				routeId: this.id,
 				loading: true,
 				isAdmin: false,
+				shareLink: '',
 				newSuggestion: '',
 				currentTopic: {},
 				showResults: false,
 				filterFinished: true,
-				voteLoading: false
+				voteLoading: false,
+				copiedLink: false
 			};
 		},
 		props: {
@@ -220,16 +231,25 @@
 				let voteAllowed = true;
 				let userId = '';
 				let voteNotAllowedMessage = 'Vote Not Allowed';
+
+
+				// TEMP - TO REMOVE LATER WHEN I FORCE COOKIES OR LOGIN
+				let TEMPWORKAROUND = false;
+				if(!this.currentTopic.Meta.CheckDup) {
+					TEMPWORKAROUND = true;
+				}
+				// TEMP - TO REMOVE LATER WHEN I FORCE COOKIES OR LOGIN
+				
 				// Check Cookies
-				if(this.currentTopic.Meta.CheckDup) {
-					if( this.currentTopic.Meta.CheckDup.loggedIn ) {
+				if(this.currentTopic.Meta.CheckDup || TEMPWORKAROUND) {
+					if( !TEMPWORKAROUND && this.currentTopic.Meta.CheckDup.loggedIn ) {
 						if(!this.user.email) {
 							voteAllowed = false;
 							voteNotAllowedMessage = 'Need to be logged in to vote'
 						} else {
 							userId = this.user._id;
 						}
-					} else if( this.currentTopic.Meta.CheckDup.cookie ) {
+					} else if( TEMPWORKAROUND || this.currentTopic.Meta.CheckDup.cookie ) {
 						let topicSug = topicId + suggestion.Suggestion;
 						let sugUserVotes = 0;
 						if(suggestion.userVotes) {
@@ -246,6 +266,7 @@
 						
 					}
 				}
+				
 				if(voteAllowed && userId && this.currentTopic) {
 					let voteData = {
 						"suggestion": suggestion.Suggestion,
@@ -290,6 +311,17 @@
 				} else {
 					alert('Suggestion is not valid');
 				}
+			},
+			copyToClipboard(inputId){
+				let eId = document.getElementById(inputId);
+				eId.select();
+				eId.setSelectionRange(0, 99999);
+				document.execCommand("copy");
+				this.copiedLink = true;
+				setTimeout(()=> {
+					this.copiedLink = false
+				},1000);
+				
 			}
 		    
 		},
@@ -297,6 +329,7 @@
 			this.routeId = this.id ? this.id : this.$route.params.id;
 			this.getUserDetails();
 			this.currentTopic = this.getTopic(this.routeId);
+			this.shareLink = window.location.origin + '/board/' + this.routeId;
 		}
 	};
 </script>
@@ -479,6 +512,15 @@ input:not([type=checkbox]) {
 				}
 			}
 		}
+	}
+}
+.copiedText {
+	opacity: 0;
+	transition: opacity ease 2s;
+	margin-bottom: 10px;
+	&.active {
+		opacity: 1;
+		transition: 0s;
 	}
 }
 </style>

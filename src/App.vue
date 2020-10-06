@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href="/" class="navbar-brand">JC Notes</a>
+      <a href="/" class="navbar-brand">Suggestion Board</a>
       <div class="navbar-nav mr-auto">
         <div class="dropdown show" v-if="user.email == 'jxc154930@gmail.com'">
           <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -87,7 +87,7 @@ export default {
   },
   watch: {
     $route (to, from){
-      if(from.path == "/Login" || from.path == "/Register") {
+      if(from.path.toLowerCase() == "/login" || from.path.toLowerCase() == "/register") {
         this.getUserDetails();
       }
     }
@@ -125,6 +125,7 @@ body {
   color: #ededed;
 }
 #app {
+  overflow: hidden;
   a {
     &:hover {
       cursor: pointer;

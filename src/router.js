@@ -46,14 +46,6 @@ const routes = [
     }
   },
   {
-    path: "/quote",
-    name: "quote",
-    component: () => import("./components/QuoteForm"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/py",
     name: "py",
     component: () => import("./components/Python"),

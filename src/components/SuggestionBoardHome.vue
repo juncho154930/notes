@@ -53,7 +53,7 @@
 						</div>
 						
 						<button @click="chooseTopic(topic)">Choose This Topic</button>
-						<router-link :to="'/board/' + topic.id">Share Link</router-link>
+						<router-link :to="'/board/' + topic.id">Go to Board</router-link>
 						<div v-if="isAdmin || ( topic.Meta && user.email == topic.Meta.CreatorEmail )">
 							<button @click="deleteTopic(topic.id)">Delete</button>
 						</div>

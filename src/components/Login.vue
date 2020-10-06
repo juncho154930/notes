@@ -47,6 +47,7 @@ export default {
   name: "Login",
   data() {
     return {
+      id: this.$route.query.id,
       login: {
         email: "",
         password: ""
@@ -62,7 +63,12 @@ export default {
             localStorage.setItem("jwt", token);
             if (token) {
               console.log("Success", "Login Successful", "success");
-              this.$router.push("/");
+              if(this.id) {
+                this.$router.push("/board/" + this.id);
+              } else {
+                this.$router.push("/");
+              }
+              
             }
           })
           .catch(e => {

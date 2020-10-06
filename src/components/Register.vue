@@ -62,6 +62,7 @@ export default {
   name: "Regsiter",
   data() {
     return {
+      id: this.$route.query.id,
       secretpass: "",
       register: {
         name: "",
@@ -82,7 +83,11 @@ export default {
               let token = response.data.token;
               if (token) {
                 localStorage.setItem("jwt", token);
-                this.$router.push("/");
+                if(this.id) {
+                  this.$router.push("/board/" + this.id);
+                } else {
+                  this.$router.push("/");
+                }
                 console.log("Success", "Registration Was successful", "success");
               } else {
                 console.log("Error", "Something Went Wrong With Regsiter", "error");
