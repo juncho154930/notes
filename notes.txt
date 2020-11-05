@@ -1,0 +1,97 @@
+CRM (Customer Relations managmeent) - Freshsales
+Project management - Asana
+Accounting - looking at quickbooks right now
+Email - Gmail with Mailgun
+Marketing - Buffer, and like 10 others.
+
+View Demo
+
+Focus MVP: Manage your entire business within a single solution
+track customers e.g. ~100
+accounting/invoicing
+track inventory
+
+You can streamline your processes, store and share files, share feedback under one roof
+Built-in time tracking and billing
+Manage clients, partners, and vendors at one place
+Create and send professional invoices/Manage quotes, contacts, and invoices seamlessly/Billing system to send and receive online payments from anywhere
+Easily accessible reports and key performance indicators
+Powerful ticketing system to deliver stellar customer support
+Roadmaps that are connected to real work/Gantt charts to keep your projects on track
+Automatic text and email reminders
+
+REAL TIME AVAILABILITY
+Online Payments
+MULTIPLE WAYS TO OFFER PRICING
+Automatic text and email reminders - REDUCE NO SHOWS
+GET FEEDBACK AFTER EACH JOB
+
+
+I want a more efficient way of managing jobs and details, clients, employees maybe even quotes and scheduling, I am not entirely sure what's out there.
+I did a brief search on it and it seemed there were options coming up that were project management programs where you paid like 20 a month per user etc. They seemed more technical and didn't really seem to fit my specific need.
+I am only a small business so I would be using it to manage 2-5 people right now. At the moment I just use google calendar and add jobs, quotes etc. to it and then this communicate this with staff by phone or email. I have a spreadsheet I record staff hours and jobs on.
+I am starting to have so many jobs scheduled I can see it will get confusing fast. I am just wondering is there a more efficient way of managing this out there?
+Launch27.com
+I just want something I can dump all this info into and have it organised for me
+can I still record jobs and schedule them myself?
+So I like the web booking system as an option but I want it to integrate with my process of taking calls, emails and texts and then responding and even maybe visiting before a job is booked in. So as long as I can manually add a job into this system then it would meet most of my major requirements. Is this possible?
+Also is there a way of easily communicating this info with relevant parties? I.e. schedule access or delivery for staff.
+It's the full operations, text message reminders, email reminders, booking yourself, your customer booking if you want, assigning teams, the whole shebang.
+
+Later:
+Dynamic reports to get clear insights
+Effective project and task management
+Its mobile app can be used by both Android and iOS users on the go.
+Focused communication and real-time updates
+Sync tasks with any calendar
+Send automated, personalized, text and email reminders
+Have clients review and sign contracts online
+Easily customize the look and feel of your software
+Manage almost every aspect of your business in one system
+Fosters collaboration with online document storage and sharing
+Automate personalized business workflows
+Plan and track work with unlimited projects
+Track time and bill for completed work accurately
+Customize your own dashboards
+Use pre-delivered reports
+Generate invoices in seconds
+Visualize, analyze, and organize your data with valuable insights
+Take a quick look at your business with dashboards
+Real-time communication makes way for better collaboration
+Covers CRM, eCommerce, accounting, inventory, sales, and project management. 
+Allowing you to fully automate your business processes.
+Cloud-based, mobile-enabled, and social
+Highly flexible and customizable
+Effective resource management, project accounting, timesheet and expense management
+Create and send invoices based on time tracked per project and customer
+Seamless integrations with project management, accounting, help desk software and more
+Simple and intuitive interface
+assign the time entries to the right project, monitor employees’ internet usage and generate detailed reports
+Desktop and mobile app available for many platforms and devices
+An internal social network lets you collaborate easier, faster and more efficiently
+Get instant feedback, share ideas, create workgroups and engage your employees
+online multi-user editing and custom document approval workflows
+Sell more with Bitrix24’s CRM and sales team management
+It works on your iPhone, iPad or Android too
+Track the complete sales process from anywhere with the online CRM software
+Collaborate on tasks, manage timesheets, and log expense reports
+Supply chain management with vendor tracking, purchasing, and inventory
+Mobile app so you can manage your business on the go
+Proposals and invoices optimized to get you booked
+Contracts your clients can sign in seconds
+Easy and intuitive workflows
+Design forward client experience
+Visualizing work in progress
+Bugs and defect management
+Polished user experience
+Customizable dashboards and wallboards
+Easy organization with tags, labels, and categories
+Drag and drop functionality
+Mobile functionality to access boards on the go
+Quick overview on front and back of cards
+Texts and visuals fit any screen size
+Multiple view boards
+Department collections
+Time reporting
+Time sheets
+Estimation fields

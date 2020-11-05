@@ -7,10 +7,20 @@ Vue.use(Router);
 
 const routes = [
   {
+    path: "/login",
+    name: "login",
+    component: () => import("./components/Login")
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("./components/Register")
+  },
+  {
     path: "/",
     // alias: "/blog",
     name: "home",
-    component: () => import("./components/Home"),
+    component: () => import("./pages/Home"),
   },
   {
     path: "/bloghome",
@@ -71,8 +81,8 @@ const routes = [
   },
   {
     path: "/board",
-    name: "suggestionboard-home",
-    component: () => import("./components/SuggestionBoardHome")
+    name: "board",
+    component: () => import("./pages/Board")
   },
   {
     path: "/board/:id",
@@ -80,20 +90,15 @@ const routes = [
     component: () => import("./components/SuggestionBoard")
   },
   {
-    path: "/login",
-    name: "login",
-    component: () => import("./components/Login")
+    path: "/user",
+    name: "user",
+    component: () => import("./pages/UserHome")
   },
-  {
-    path: "/register",
-    name: "register",
-    component: () => import("./components/Register")
-  },
+
   {
     path: "/*",
-    component: () => import("./components/404")
-  }
-
+    component: () => import("./pages/404")
+  },
 ]
 
 const router = new Router({
