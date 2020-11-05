@@ -39,11 +39,6 @@
                 >Sundae</router-link
               >
             </div>
-            <div class="dropdown-item">
-              <router-link to="/bms"
-                >BMS</router-link
-              >
-            </div>
           </div>
         </div>
         <div class="dropdown-item">
