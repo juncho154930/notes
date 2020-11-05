@@ -155,7 +155,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style>
 .list-group-item {
   color: rebeccapurple;
 }
