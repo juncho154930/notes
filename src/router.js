@@ -80,6 +80,14 @@ const routes = [
     }
   },
   {
+    path: "/tosh",
+    name: "tosh",
+    component: () => import("./components/Tosh"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/board",
     name: "board",
     component: () => import("./pages/Board")

@@ -39,6 +39,11 @@
                 >Sundae</router-link
               >
             </div>
+            <div class="dropdown-item">
+              <router-link to="/Tosh"
+                >Tosh</router-link
+              >
+            </div>
           </div>
         </div>
         <div class="dropdown-item">
