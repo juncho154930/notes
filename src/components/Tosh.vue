@@ -6,6 +6,8 @@
 			<p>
 				Albino Het Green Baby Male 2020 Burmese Python. <br>
 				Born Late August - Aug 26, 2020?<br>
+				Mother: ~12ft<br>
+				Fater: ~9ft<br>
 				At arrival: <br>
 				Received - Nov 6, 2020<br>
 				Feeding him frozen thawed large mice<br>
